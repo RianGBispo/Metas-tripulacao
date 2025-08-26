@@ -84,21 +84,42 @@
         // declarada globalmente
         let crewData = {};
 
-        // Em vez de fetch, carregue do localStorage
-        function loadCrewData() {
-            const savedData = localStorage.getItem('crewData');
-            if (savedData) {
-                crewData = JSON.parse(savedData);
-            } else {
-                // Dados iniciais se não existir
-                crewData = {};
+        // Carregar dados - primeiro tenta do arquivo JSON, depois do localStorage como fallback
+        async function loadCrewData() {
+            try {
+                // Primeiro tenta carregar do arquivo JSON
+                const response = await fetch('crewData.json');
+                if (response.ok) {
+                    let jsonData = await response.json();
+                    crewData = jsonData.crewData || jsonData; // pega só o crewData, ou o json direto
+                    console.log('Dados carregados do arquivo crewData.json');
+                } else {
+                    // Se o arquivo não existir, tenta do localStorage
+                    throw new Error('Arquivo não encontrado');
+                }
+            } catch (error) {
+                console.log('Carregando do localStorage:', error.message);
+                const savedData = localStorage.getItem('crewData');
+                if (savedData) {
+                    crewData = JSON.parse(savedData);
+                } else {
+                    // Dados iniciais se não existir em nenhum lugar
+                    crewData = {};
+                }
             }
             renderCrew();
         }
 
-        // Salvar dados no localStorage
+        // Salvar dados no localStorage E opcionalmente oferecer download do JSON atualizado
         function saveCrewData() {
+            // Sempre salva no localStorage
             localStorage.setItem('crewData', JSON.stringify(crewData));
+            
+            // Opcional: também oferece para salvar o arquivo atualizado
+            // Você pode remover esta parte se não quiser o prompt automático
+            if (confirm('Deseja baixar uma cópia atualizada do arquivo crewData.json?')) {
+                exportData();
+            }
         }
 
 
@@ -240,6 +261,7 @@
             }
         }
 
+        // Modifique a função exportData para sobrescrever o arquivo corretamente
         function exportData() {
             // Criar objeto com todos os dados necessários
             const exportData = {
@@ -250,7 +272,7 @@
                     drugValue: DRUG_VALUE,
                     totalContribution: Object.values(crewData).reduce((sum, member) => sum + member.contribution, 0)
                 }
-            };
+        };
             
             // Converter para JSON formatado
             const jsonData = JSON.stringify(exportData, null, 2);
@@ -262,7 +284,7 @@
             // Criar elemento de download
             const a = document.createElement('a');
             a.href = url;
-            a.download = `crewData.json`;
+            a.download = 'crewData.json'; // Nome fixo para substituir o arquivo original
             document.body.appendChild(a);
             a.click();
             
@@ -270,8 +292,10 @@
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
             
-            alert('📁 Dados exportados como arquivo JSON!');
+            alert('📁 Arquivo crewData.json atualizado e pronto para download!');
         }
+
+
 
         // Atualizar campo de dinheiro sujo automaticamente
         document.getElementById('drugsInput').addEventListener('input', function() {
