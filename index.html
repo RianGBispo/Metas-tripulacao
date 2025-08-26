@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.svg" type="image/svg">
+    <title>Lamento da Viúva</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="skull">💀</div>
+            <h1>Sistema de Metas da Tripulação</h1>
+            <p>Não tem espaço pra preguiçoso no nosso convés! 🌊</p>
+        </div>
+
+        <div class="meta-info">
+            <h2>⚓ Meta Semanal</h2>
+            <div class="meta-details">
+                <div class="meta-card">
+                    <h3>🎯 Objetivo</h3>
+                    <p><strong>500 drogas vendidas</strong><br>
+                    OU equivalente em dinheiro sujo<br>
+                    <em>(cada droga = $28 sujo)</em></p>
+                </div>
+                <div class="meta-card">
+                    <h3>🏴‍☠️ Por que fazemos isso?</h3>
+                    <ul>
+                        <li>💰 Encher o bolso de cada um</li>
+                        <li>🏦 Manter caixa da tripulação saudável</li>
+                        <li>⭐ Quem vende mais, lucra mais!</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="premio">
+                🛥️ PRÊMIO DESTA SEMANA: BARCO PEQUENO para quem bater 500 drogas!
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="openUpdateModal()">📊 Atualizar Progresso</button>
+            <button class="btn btn-primary" onclick="resetWeek()">🔄 Nova Semana</button>
+            <button class="btn btn-primary" onclick="exportData()">📤 Exportar Dados</button>
+            <button class="btn btn-primary" onclick="triggerImport()">Importar Dados</button>
+            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importDataFromFile(event)">
+        </div>
+
+        <div class="crew-grid" id="crewGrid">
+            <!-- Os membros da tripulação serão gerados aqui -->
+        </div>
+
+        <div class="treasury">
+            <h2>🏴‍☠️ Caixa da Tripulação</h2>
+            <div class="treasury-value" id="treasuryValue">$672.00</div>
+            <p>Tesouro acumulado da semana</p>
+        </div>
+    </div>
+
+    <!-- Modal para atualizar progresso -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateModal()">&times;</span>
+            <h3>⚓ Atualizar Progresso</h3>
+            <div class="form-group">
+                <label for="memberSelect">Membro da Tripulação:</label>
+                <select id="memberSelect"></select>
+            </div>
+            <div class="form-group">
+                <label for="drugsInput">Drogas Vendidas:</label>
+                <input type="number" id="drugsInput" min="0" placeholder="Digite a quantidade">
+            </div>
+            <div class="form-group">
+                <label for="dirtyMoneyInput">Dinheiro Sujo ($):</label>
+                <input type="number" id="dirtyMoneyInput" min="0" step="0.01" placeholder="Será calculado automaticamente">
+            </div>
+            <button class="btn btn-primary" onclick="updateProgress()" style="width: 100%; margin-top: 20px;">
+                💰 Atualizar Progresso
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // declarada globalmente
+        let crewData = {};
+
+        // Em vez de fetch, carregue do localStorage
+        function loadCrewData() {
+            const savedData = localStorage.getItem('crewData');
+            if (savedData) {
+                crewData = JSON.parse(savedData);
+            } else {
+                // Dados iniciais se não existir
+                crewData = {};
+            }
+            renderCrew();
+        }
+
+        // Salvar dados no localStorage
+        function saveCrewData() {
+            localStorage.setItem('crewData', JSON.stringify(crewData));
+        }
+
+
+        const TARGET_DRUGS = 500;
+        const DRUG_VALUE = 28;
+
+        function getStatusClass(drugs) {
+            if (drugs >= TARGET_DRUGS) return 'completed';
+            if (drugs > 0) return 'in-progress';
+            return 'not-started';
+        }
+
+        function getStatusIcon(drugs) {
+            if (drugs >= TARGET_DRUGS) return '🏆';
+            if (drugs > 0) return '⚡';
+            return '💤';
+        }
+
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(amount);
+        }
+
+        function renderCrew() {
+            const crewGrid = document.getElementById('crewGrid');
+            const memberSelect = document.getElementById('memberSelect');
+            
+            crewGrid.innerHTML = '';
+            memberSelect.innerHTML = '<option value="">Selecione um membro...</option>';
+
+            // Ordenar por progresso (maior primeiro)
+            const sortedCrew = Object.entries(crewData).sort((a, b) => b[1].drugs - a[1].drugs);
+
+            sortedCrew.forEach(([name, data]) => {
+                const statusClass = getStatusClass(data.drugs);
+                const statusIcon = getStatusIcon(data.drugs);
+                const progressPercent = Math.min((data.drugs / TARGET_DRUGS) * 100, 100);
+
+                const crewMember = document.createElement('div');
+                crewMember.className = `crew-member ${statusClass}`;
+                crewMember.innerHTML = `
+                    <div class="member-name">
+                        <span class="status-icon">${statusIcon}</span>
+                        ${name}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${statusClass}" style="width: ${progressPercent}%"></div>
+                        <div class="progress-text">${data.drugs}/${TARGET_DRUGS} drogas (${Math.round(progressPercent)}%)</div>
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value">${formatMoney(data.dirtyMoney)}</div>
+                            <div class="stat-label">Dinheiro Sujo</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${formatMoney(data.cleanMoney)}</div>
+                            <div class="stat-label">Dinheiro Limpo</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${formatMoney(data.contribution)}</div>
+                            <div class="stat-label">Contribuição</div>
+                        </div>
+                    </div>
+                `;
+                crewGrid.appendChild(crewMember);
+
+                // Adicionar ao select
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                memberSelect.appendChild(option);
+            });
+
+            // Atualizar caixa da tripulação
+            const totalContribution = Object.values(crewData).reduce((sum, member) => sum + member.contribution, 0);
+            document.getElementById('treasuryValue').textContent = formatMoney(totalContribution);
+        }
+
+        function openUpdateModal() {
+            document.getElementById('updateModal').style.display = 'block';
+        }
+
+        function closeUpdateModal() {
+            document.getElementById('updateModal').style.display = 'none';
+            // Limpar campos
+            document.getElementById('memberSelect').value = '';
+            document.getElementById('drugsInput').value = '';
+            document.getElementById('dirtyMoneyInput').value = '';
+        }
+
+        function updateProgress() {
+            const memberName = document.getElementById('memberSelect').value;
+            const drugs = parseInt(document.getElementById('drugsInput').value) || 0;
+            
+            if (!memberName) {
+                alert('Selecione um membro da tripulação!');
+                return;
+            }
+
+            // Calcular valores
+            const dirtyMoney = drugs * DRUG_VALUE;
+            const cleanMoney = dirtyMoney * 0.72;
+            const contribution = dirtyMoney * 0.08;
+
+            // Atualizar dados
+            crewData[memberName] = {
+                drugs: drugs,
+                dirtyMoney: dirtyMoney,
+                cleanMoney: cleanMoney,
+                contribution: contribution
+            };
+
+            // Salvar no localStorage
+            saveCrewData();
+            
+            // Re-renderizar
+            renderCrew();
+            closeUpdateModal();
+
+            // Mostrar mensagem de sucesso
+            if (drugs >= TARGET_DRUGS) {
+                alert(`🏆 ${memberName} bateu a meta! Parabéns, pirata! 🏴‍☠️`);
+            }
+        }
+
+        function resetWeek() {
+            if (confirm('Tem certeza que deseja resetar os dados para uma nova semana?')) {
+                Object.keys(crewData).forEach(name => {
+                    crewData[name] = { drugs: 0, dirtyMoney: 0, cleanMoney: 0, contribution: 0 };
+                });
+                
+                // Salvar dados resetados
+                saveCrewData();
+                renderCrew();
+                
+                alert('📊 Nova semana iniciada! Que os ventos sejam favoráveis! ⛵');
+            }
+        }
+
+        function exportData() {
+            // Criar objeto com todos os dados necessários
+            const exportData = {
+                crewData: crewData,
+                metadata: {
+                    exportDate: new Date().toISOString(),
+                    targetDrugs: TARGET_DRUGS,
+                    drugValue: DRUG_VALUE,
+                    totalContribution: Object.values(crewData).reduce((sum, member) => sum + member.contribution, 0)
+                }
+            };
+            
+            // Converter para JSON formatado
+            const jsonData = JSON.stringify(exportData, null, 2);
+            
+            // Criar blob para download
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            // Criar elemento de download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `crewData.json`;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Limpar
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('📁 Dados exportados como arquivo JSON!');
+        }
+
+        // Atualizar campo de dinheiro sujo automaticamente
+        document.getElementById('drugsInput').addEventListener('input', function() {
+            const drugs = parseInt(this.value) || 0;
+            const dirtyMoney = drugs * DRUG_VALUE;
+            document.getElementById('dirtyMoneyInput').value = dirtyMoney;
+        });
+
+        // Fechar modal clicando fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('updateModal');
+            if (event.target === modal) {
+                closeUpdateModal();
+            }
+        }
+
+        function exportDataToFile() {
+            const dataStr = JSON.stringify(crewData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = 'crew-data.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        }
+
+        function importDataFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    crewData = importedData;
+                    saveCrewData();
+                    renderCrew();
+                    alert('Dados importados com sucesso!');
+                } catch (error) {
+                    alert('Erro ao importar arquivo: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Adicione este input oculto no HTML para importação
+        function triggerImport() {
+            document.getElementById('fileInput').click();
+        }
+
+        // Inicializar
+        loadCrewData();
+    </script>
+</body>
+</html>

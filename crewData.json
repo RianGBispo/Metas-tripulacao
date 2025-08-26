@@ -1,0 +1,94 @@
+{
+  "crewData": {
+    "Gale Kernel": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Edward Henway": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Oliver Smith": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Black Caesar": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Django West": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Billy Jhonw": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Robert Bob": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Addeh": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Barreto": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Constantine Basso": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Coveiro Mcoy": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Dias": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Jack Foster": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    },
+    "Jhon Kramer": {
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
+    }
+  },
+  "metadata": {
+    "exportDate": "2025-08-26T21:21:29.014Z",
+    "targetDrugs": 500,
+    "drugValue": 28,
+    "totalContribution": 0
+  }
+}
