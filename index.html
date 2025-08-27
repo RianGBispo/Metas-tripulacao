@@ -16,13 +16,20 @@
         </div>
 
         <div class="meta-info">
-            <h2>⚓ Meta Semanal</h2>
+            <h2>⚓ Metas da Semana</h2>
             <div class="meta-details">
                 <div class="meta-card">
-                    <h3>🎯 Objetivo</h3>
-                    <p><strong>500 drogas vendidas</strong><br>
-                    OU equivalente em dinheiro sujo<br>
-                    <em>(cada droga = $28 sujo)</em></p>
+                    <h3>🎯 Sistema de Metas</h3>
+                    <div class="goals-system">
+                        <div class="goal-tier minimum">
+                            <strong>📊 Meta Mínima: 250 drogas</strong><br>
+                            <small>Apenas dinheiro do trabalho</small>
+                        </div>
+                        <div class="goal-tier premium">
+                            <strong>🏆 Meta Premium: 500+ drogas</strong><br>
+                            <small>Ganha premiação da semana!</small>
+                        </div>
+                    </div>
                 </div>
                 <div class="meta-card">
                     <h3>🏴‍☠️ Por que fazemos isso?</h3>
@@ -30,11 +37,12 @@
                         <li>💰 Encher o bolso de cada um</li>
                         <li>🏦 Manter caixa da tripulação saudável</li>
                         <li>⭐ Quem vende mais, lucra mais!</li>
+                        <li>🎁 Premiações para os dedicados!</li>
                     </ul>
                 </div>
             </div>
             <div class="premio">
-                🛥️ PRÊMIO DESTA SEMANA: BARCO PEQUENO para quem bater 500 drogas!
+                🛥️ PRÊMIO DESTA SEMANA: BARCO PEQUENO para quem bater 500+ drogas!
             </div>
         </div>
 
@@ -91,7 +99,7 @@
                 const response = await fetch('crewData.json');
                 if (response.ok) {
                     let jsonData = await response.json();
-                    crewData = jsonData.crewData || jsonData; // pega só o crewData, ou o json direto
+                    crewData = jsonData.crewData || jsonData;
                     console.log('Dados carregados do arquivo crewData.json');
                 } else {
                     // Se o arquivo não existir, tenta do localStorage
@@ -122,20 +130,28 @@
             }
         }
 
-
-        const TARGET_DRUGS = 500;
+        const MINIMUM_DRUGS = 300;  // Meta mínima
+        const TARGET_DRUGS = 500;   // Meta para premiação
         const DRUG_VALUE = 28;
 
         function getStatusClass(drugs) {
             if (drugs >= TARGET_DRUGS) return 'completed';
+            if (drugs >= MINIMUM_DRUGS) return 'minimum-reached';
             if (drugs > 0) return 'in-progress';
             return 'not-started';
         }
 
         function getStatusIcon(drugs) {
             if (drugs >= TARGET_DRUGS) return '🏆';
+            if (drugs >= MINIMUM_DRUGS) return '✅';
             if (drugs > 0) return '⚡';
             return '💤';
+        }
+
+        function getStatusBadge(drugs) {
+            if (drugs >= TARGET_DRUGS) return '<span class="status-badge premium">🎁 bateu a meta e ganhou um prêmio especial! 🎁🏴‍☠️</span>';
+            if (drugs >= MINIMUM_DRUGS) return '<span class="status-badge minimum">✅ META MÍNIMA ATINGIDA</span>';
+            return '';
         }
 
         function formatMoney(amount) {
@@ -158,6 +174,7 @@
             sortedCrew.forEach(([name, data]) => {
                 const statusClass = getStatusClass(data.drugs);
                 const statusIcon = getStatusIcon(data.drugs);
+                const statusBadge = getStatusBadge(data.drugs);
                 const progressPercent = Math.min((data.drugs / TARGET_DRUGS) * 100, 100);
 
                 const crewMember = document.createElement('div');
@@ -166,6 +183,7 @@
                     <div class="member-name">
                         <span class="status-icon">${statusIcon}</span>
                         ${name}
+                        ${statusBadge}
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill ${statusClass}" style="width: ${progressPercent}%"></div>
@@ -213,46 +231,50 @@
         }
 
         function updateProgress() {
-        const memberName = document.getElementById('memberSelect').value;
-        const drugs = parseInt(document.getElementById('drugsInput').value) || 0;
-        
-        if (!memberName) {
-            alert('Selecione um membro da tripulação!');
-            return;
+            const memberName = document.getElementById('memberSelect').value;
+            const drugs = parseInt(document.getElementById('drugsInput').value) || 0;
+            
+            if (!memberName) {
+                alert('Selecione um membro da tripulação!');
+                return;
+            }
+
+            // Calcular valores novos
+            const dirtyMoney = drugs * DRUG_VALUE;
+            const cleanMoney = dirtyMoney * 0.72;
+            const contribution = dirtyMoney * 0.08;
+
+            // Se o membro já existir, acumula. Senão, cria do zero
+            if (!crewData[memberName]) {
+                crewData[memberName] = {
+                    drugs: 0,
+                    dirtyMoney: 0,
+                    cleanMoney: 0,
+                    contribution: 0
+                };
+            }
+
+            const oldDrugs = crewData[memberName].drugs;
+            crewData[memberName].drugs += drugs;
+            crewData[memberName].dirtyMoney += dirtyMoney;
+            crewData[memberName].cleanMoney += cleanMoney;
+            crewData[memberName].contribution += contribution;
+
+            // Salvar no localStorage
+            saveCrewData();
+            
+            // Re-renderizar
+            renderCrew();
+            closeUpdateModal();
+
+            // Mostrar mensagens de conquista
+            const totalDrugs = crewData[memberName].drugs;
+            if (oldDrugs < TARGET_DRUGS && totalDrugs >= TARGET_DRUGS) {
+                alert(`🏆 ${memberName} conquistou a meta premium! Ganha o prêmio da semana! 🎁🏴‍☠️`);
+            } else if (oldDrugs < MINIMUM_DRUGS && totalDrugs >= MINIMUM_DRUGS) {
+                alert(`✅ ${memberName} atingiu a meta mínima! Continue assim para ganhar o prêmio! 💪`);
+            }
         }
-
-        // Calcular valores novos
-        const dirtyMoney = drugs * DRUG_VALUE;
-        const cleanMoney = dirtyMoney * 0.72;
-        const contribution = dirtyMoney * 0.08;
-
-        // Se o membro já existir, acumula. Senão, cria do zero
-        if (!crewData[memberName]) {
-            crewData[memberName] = {
-                drugs: 0,
-                dirtyMoney: 0,
-                cleanMoney: 0,
-                contribution: 0
-            };
-        }
-
-        crewData[memberName].drugs += drugs;
-        crewData[memberName].dirtyMoney += dirtyMoney;
-        crewData[memberName].cleanMoney += cleanMoney;
-        crewData[memberName].contribution += contribution;
-
-        // Salvar no localStorage
-        saveCrewData();
-        
-        // Re-renderizar
-        renderCrew();
-        closeUpdateModal();
-
-        // Mostrar mensagem de sucesso
-        if (crewData[memberName].drugs >= TARGET_DRUGS) {
-            alert(`🏆 ${memberName} bateu a meta! Parabéns, pirata! 🏴‍☠️`);
-        }
-    }
 
         function resetWeek() {
             if (confirm('Tem certeza que deseja resetar os dados para uma nova semana?')) {
@@ -268,18 +290,18 @@
             }
         }
 
-        // Modifique a função exportData para sobrescrever o arquivo corretamente
         function exportData() {
             // Criar objeto com todos os dados necessários
             const exportData = {
                 crewData: crewData,
                 metadata: {
                     exportDate: new Date().toISOString(),
+                    minimumDrugs: MINIMUM_DRUGS,
                     targetDrugs: TARGET_DRUGS,
                     drugValue: DRUG_VALUE,
                     totalContribution: Object.values(crewData).reduce((sum, member) => sum + member.contribution, 0)
                 }
-        };
+            };
             
             // Converter para JSON formatado
             const jsonData = JSON.stringify(exportData, null, 2);
@@ -291,7 +313,7 @@
             // Criar elemento de download
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'crewData.json'; // Nome fixo para substituir o arquivo original
+            a.download = 'crewData.json';
             document.body.appendChild(a);
             a.click();
             
@@ -301,8 +323,6 @@
             
             alert('📁 Arquivo crewData.json atualizado e pronto para download!');
         }
-
-
 
         // Atualizar campo de dinheiro sujo automaticamente
         document.getElementById('drugsInput').addEventListener('input', function() {
@@ -319,18 +339,6 @@
             }
         }
 
-        function exportDataToFile() {
-            const dataStr = JSON.stringify(crewData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = 'crew-data.json';
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-        }
-
         function importDataFromFile(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -339,7 +347,7 @@
             reader.onload = function(e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
-                    crewData = importedData;
+                    crewData = importedData.crewData || importedData;
                     saveCrewData();
                     renderCrew();
                     alert('Dados importados com sucesso!');
@@ -350,7 +358,6 @@
             reader.readAsText(file);
         }
 
-        // Adicione este input oculto no HTML para importação
         function triggerImport() {
             document.getElementById('fileInput').click();
         }
