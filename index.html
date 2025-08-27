@@ -130,9 +130,11 @@
             }
         }
 
-        const MINIMUM_DRUGS = 300;  // Meta mínima
+        const MINIMUM_DRUGS = 250;  // Meta mínima
         const TARGET_DRUGS = 500;   // Meta para premiação
         const DRUG_VALUE = 28;
+        const WASHING_PERCENT = 20;         // custo para "processar" o bruto
+        const CONTRIBUTION_PERCENT = 20; // Porcentagem da contribuição (20%)
 
         function getStatusClass(drugs) {
             if (drugs >= TARGET_DRUGS) return 'completed';
@@ -239,10 +241,11 @@
                 return;
             }
 
-            // Calcular valores novos
+            // Calcular valores
             const dirtyMoney = drugs * DRUG_VALUE;
-            const cleanMoney = dirtyMoney * 0.72;
-            const contribution = dirtyMoney * 0.08;
+            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100); // 20% sobre o bruto
+            const cleanMoney = cleanMoneyBruto * 0.80; // 80% sobre o bruto
+            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100); // 20% sobre o líquido limpo
 
             // Se o membro já existir, acumula. Senão, cria do zero
             if (!crewData[memberName]) {
