@@ -213,39 +213,46 @@
         }
 
         function updateProgress() {
-            const memberName = document.getElementById('memberSelect').value;
-            const drugs = parseInt(document.getElementById('drugsInput').value) || 0;
-            
-            if (!memberName) {
-                alert('Selecione um membro da tripulação!');
-                return;
-            }
-
-            // Calcular valores
-            const dirtyMoney = drugs * DRUG_VALUE;
-            const cleanMoney = dirtyMoney * 0.72;
-            const contribution = dirtyMoney * 0.08;
-
-            // Atualizar dados
-            crewData[memberName] = {
-                drugs: drugs,
-                dirtyMoney: dirtyMoney,
-                cleanMoney: cleanMoney,
-                contribution: contribution
-            };
-
-            // Salvar no localStorage
-            saveCrewData();
-            
-            // Re-renderizar
-            renderCrew();
-            closeUpdateModal();
-
-            // Mostrar mensagem de sucesso
-            if (drugs >= TARGET_DRUGS) {
-                alert(`🏆 ${memberName} bateu a meta! Parabéns, pirata! 🏴‍☠️`);
-            }
+        const memberName = document.getElementById('memberSelect').value;
+        const drugs = parseInt(document.getElementById('drugsInput').value) || 0;
+        
+        if (!memberName) {
+            alert('Selecione um membro da tripulação!');
+            return;
         }
+
+        // Calcular valores novos
+        const dirtyMoney = drugs * DRUG_VALUE;
+        const cleanMoney = dirtyMoney * 0.72;
+        const contribution = dirtyMoney * 0.08;
+
+        // Se o membro já existir, acumula. Senão, cria do zero
+        if (!crewData[memberName]) {
+            crewData[memberName] = {
+                drugs: 0,
+                dirtyMoney: 0,
+                cleanMoney: 0,
+                contribution: 0
+            };
+        }
+
+        crewData[memberName].drugs += drugs;
+        crewData[memberName].dirtyMoney += dirtyMoney;
+        crewData[memberName].cleanMoney += cleanMoney;
+        crewData[memberName].contribution += contribution;
+
+        // Salvar no localStorage
+        saveCrewData();
+        
+        // Re-renderizar
+        renderCrew();
+        closeUpdateModal();
+
+        // Mostrar mensagem de sucesso
+        if (crewData[memberName].drugs >= TARGET_DRUGS) {
+            alert(`🏆 ${memberName} bateu a meta! Parabéns, pirata! 🏴‍☠️`);
+        }
+    }
 
         function resetWeek() {
             if (confirm('Tem certeza que deseja resetar os dados para uma nova semana?')) {
