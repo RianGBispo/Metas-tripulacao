@@ -31,10 +31,10 @@
       "contribution": 0
     },
     "Finn o Ruivo": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 303,
+      "dirtyMoney": 8484,
+      "cleanMoney": 5429.760000000001,
+      "contribution": 1085.9520000000002
     },
     "Robert Bob": {
       "drugs": 0,
@@ -98,10 +98,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-08-29T03:25:47.490Z",
+    "exportDate": "2025-08-30T22:44:07.463Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 179.20000000000002
+    "totalContribution": 1265.1520000000003
   }
 }
