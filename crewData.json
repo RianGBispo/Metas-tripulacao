@@ -25,10 +25,10 @@
       "contribution": 0
     },
     "Django West": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 300,
+      "dirtyMoney": 8400,
+      "cleanMoney": 5376,
+      "contribution": 1075.2
     },
     "Finn o Ruivo": {
       "drugs": 303,
@@ -98,10 +98,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-08-30T22:44:07.463Z",
+    "exportDate": "2025-08-31T18:46:08.448Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 1265.1520000000003
+    "totalContribution": 2340.352
   }
 }
