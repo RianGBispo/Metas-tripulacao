@@ -1,10 +1,10 @@
 {
   "crewData": {
     "Gale Kernel": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 1204,
+      "dirtyMoney": 33712,
+      "cleanMoney": 21575.680000000004,
+      "contribution": 4315.136000000001
     },
     "Edward Henway": {
       "drugs": 0,
@@ -98,10 +98,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-08-31T18:46:08.448Z",
+    "exportDate": "2025-08-31T18:48:39.330Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 2340.352
+    "totalContribution": 6655.488000000001
   }
 }
