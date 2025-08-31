@@ -67,10 +67,10 @@
       "contribution": 0
     },
     "Dias": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 372,
+      "dirtyMoney": 10416,
+      "cleanMoney": 6666.240000000002,
+      "contribution": 1333.2480000000005
     },
     "Jack Foster": {
       "drugs": 0,
@@ -98,10 +98,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-08-31T19:07:29.525Z",
+    "exportDate": "2025-08-31T19:42:57.851Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 7103.488000000001
+    "totalContribution": 8436.736
   }
 }
