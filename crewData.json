@@ -7,10 +7,10 @@
       "contribution": 4315.136000000001
     },
     "Edward Henway": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 550,
+      "dirtyMoney": 15400,
+      "cleanMoney": 9856,
+      "contribution": 1971.2
     },
     "Oliver Smith": {
       "drugs": 0,
@@ -98,10 +98,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-01T01:08:57.531Z",
+    "exportDate": "2025-09-01T13:52:19.463Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 10239.488000000001
+    "totalContribution": 12210.688000000002
   }
 }
