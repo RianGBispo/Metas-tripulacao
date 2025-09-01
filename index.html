@@ -161,7 +161,9 @@
         function formatMoney(amount) {
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
-                currency: 'USD'
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             }).format(amount);
         }
 
@@ -176,10 +178,12 @@
             const sortedCrew = Object.entries(crewData).sort((a, b) => b[1].drugs - a[1].drugs);
 
             sortedCrew.forEach(([name, data]) => {
-                const statusClass = getStatusClass(data.drugs);
-                const statusIcon = getStatusIcon(data.drugs);
-                const statusBadge = getStatusBadge(data.drugs);
-                const progressPercent = Math.min((data.drugs / TARGET_DRUGS) * 100, 100);
+                // Arredondar apenas as drogas para exibição
+                const drugsDisplayed = Math.round(data.drugs);
+                const statusClass = getStatusClass(drugsDisplayed);
+                const statusIcon = getStatusIcon(drugsDisplayed);
+                const statusBadge = getStatusBadge(drugsDisplayed);
+                const progressPercent = Math.min((drugsDisplayed / TARGET_DRUGS) * 100, 100);
 
                 const crewMember = document.createElement('div');
                 crewMember.className = `crew-member ${statusClass}`;
@@ -191,7 +195,7 @@
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill ${statusClass}" style="width: ${progressPercent}%"></div>
-                        <div class="progress-text">${data.drugs}/${TARGET_DRUGS} drogas (${Math.round(progressPercent)}%)</div>
+                        <div class="progress-text">${drugsDisplayed}/${TARGET_DRUGS} drogas (${Math.round(progressPercent)}%)</div>
                     </div>
                     <div class="stats">
                         <div class="stat">
@@ -239,7 +243,7 @@
             document.getElementById('calculationResult').innerHTML = '';
         }
 
-        // Calcular valores com base na quantidade de drogas
+        // Calcular valores com base na quantidade de drogas (mantém drogas exatas internamente)
         function calculateFromDrugs(drugs) {
             const dirtyMoney = drugs * DRUG_VALUE;
             const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
@@ -247,23 +251,23 @@
             const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
             
             return {
-                drugs,
+                drugs: drugs, // Mantém o valor exato das drogas
                 dirtyMoney,
                 cleanMoney,
                 contribution
             };
         }
 
-        // Calcular quantidade de drogas com base no dinheiro sujo
+        // Calcular quantidade de drogas com base no dinheiro sujo (mantém dinheiro exato)
         function calculateFromMoney(dirtyMoney) {
-            const drugs = Math.floor(dirtyMoney / DRUG_VALUE);
+            const drugs = dirtyMoney / DRUG_VALUE; // Mantém valor exato das drogas
             const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
             const cleanMoney = cleanMoneyBruto * 0.80;
             const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
             
             return {
-                drugs,
-                dirtyMoney,
+                drugs: drugs, // Valor exato das drogas (pode ter decimais)
+                dirtyMoney: dirtyMoney, // Valor exato do dinheiro
                 cleanMoney,
                 contribution
             };
@@ -275,10 +279,11 @@
             calculationResult.innerHTML = `
                 <div class="calculation-details">
                     <h3>Detalhes do Cálculo:</h3>
-                    <p><strong>Drogas:</strong> ${result.drugs}</p>
+                    <p><strong>Drogas:</strong> ${Math.round(result.drugs)} (exibição)</p>
                     <p><strong>Dinheiro Sujo:</strong> ${formatMoney(result.dirtyMoney)}</p>
                     <p><strong>Dinheiro Limpo:</strong> ${formatMoney(result.cleanMoney)}</p>
                     <p><strong>Contribuição (${CONTRIBUTION_PERCENT}%):</strong> ${formatMoney(result.contribution)}</p>
+                    <p style="color: #888; font-size: 0.9em;"><em>Nota: Drogas são arredondadas apenas para visualização. Valores de dinheiro são exatos.</em></p>
                 </div>
             `;
         }
@@ -295,14 +300,16 @@
             }
 
             let result;
-            if (drugsInput) {
-                // Calcular a partir das drogas
-                const drugs = parseInt(drugsInput);
-                result = calculateFromDrugs(drugs);
-            } else if (moneyInput) {
-                // Calcular a partir do dinheiro
-                const dirtyMoney = parseInt(moneyInput);
+            if (moneyInput) {
+                // PRIORITAR cálculo a partir do dinheiro se ambos estiverem preenchidos
+                const dirtyMoney = parseFloat(moneyInput);
                 result = calculateFromMoney(dirtyMoney);
+                console.log('Calculando pelo DINHEIRO:', dirtyMoney, '-> resultado:', result);
+            } else if (drugsInput) {
+                // Calcular a partir das drogas apenas se dinheiro não foi informado
+                const drugs = parseFloat(drugsInput);
+                result = calculateFromDrugs(drugs);
+                console.log('Calculando pelas DROGAS:', drugs, '-> resultado:', result);
             } else {
                 alert('Digite a quantidade de drogas ou o valor em dinheiro!');
                 return;
@@ -319,10 +326,14 @@
             }
 
             const oldDrugs = crewData[memberName].drugs;
+            
+            // Acumular os valores EXATOS
             crewData[memberName].drugs += result.drugs;
             crewData[memberName].dirtyMoney += result.dirtyMoney;
             crewData[memberName].cleanMoney += result.cleanMoney;
             crewData[memberName].contribution += result.contribution;
+
+            console.log('Dados salvos para', memberName, ':', crewData[memberName]);
 
             // Salvar no localStorage
             saveCrewData();
@@ -331,11 +342,13 @@
             renderCrew();
             closeUpdateModal();
 
-            // Mostrar mensagens de conquista
-            const totalDrugs = crewData[memberName].drugs;
-            if (oldDrugs < TARGET_DRUGS && totalDrugs >= TARGET_DRUGS) {
+            // Mostrar mensagens de conquista (usando valor arredondado das drogas)
+            const totalDrugsRounded = Math.round(crewData[memberName].drugs);
+            const oldDrugsRounded = Math.round(oldDrugs);
+            
+            if (oldDrugsRounded < TARGET_DRUGS && totalDrugsRounded >= TARGET_DRUGS) {
                 alert(`🏆 ${memberName} conquistou a meta premium! Ganha o prêmio da semana! 🎁🏴‍☠️`);
-            } else if (oldDrugs < MINIMUM_DRUGS && totalDrugs >= MINIMUM_DRUGS) {
+            } else if (oldDrugsRounded < MINIMUM_DRUGS && totalDrugsRounded >= MINIMUM_DRUGS) {
                 alert(`✅ ${memberName} atingiu a meta mínima! Continue assim para ganhar o prêmio! 💪`);
             }
         }
@@ -390,7 +403,7 @@
 
         // Atualizar campo de dinheiro sujo automaticamente quando digitar drogas
         document.getElementById('drugsInput').addEventListener('input', function() {
-            const drugs = parseInt(this.value) || 0;
+            const drugs = parseFloat(this.value) || 0;
             if (drugs > 0) {
                 const result = calculateFromDrugs(drugs);
                 document.getElementById('dirtyMoneyInput').value = result.dirtyMoney;
@@ -403,10 +416,11 @@
 
         // Atualizar campo de drogas automaticamente quando digitar dinheiro
         document.getElementById('dirtyMoneyInput').addEventListener('input', function() {
-            const dirtyMoney = parseInt(this.value) || 0;
+            const dirtyMoney = parseFloat(this.value) || 0;
             if (dirtyMoney > 0) {
                 const result = calculateFromMoney(dirtyMoney);
-                document.getElementById('drugsInput').value = result.drugs;
+                // Mostrar drogas arredondadas no campo, mas manter valor exato internamente
+                document.getElementById('drugsInput').value = Math.round(result.drugs);
                 showCalculations(result);
             } else {
                 document.getElementById('drugsInput').value = '';
