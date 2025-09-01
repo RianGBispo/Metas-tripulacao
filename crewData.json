@@ -85,23 +85,23 @@
       "contribution": 0
     },
     "Mota Rockefeller": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 100,
+      "dirtyMoney": 2800,
+      "cleanMoney": 1792,
+      "contribution": 358.40000000000003
     },
-    "Melissa Rockefeller": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+    "Melissa White": {
+      "drugs": 100,
+      "dirtyMoney": 2800,
+      "cleanMoney": 1792,
+      "contribution": 358.40000000000003
     }
   },
   "metadata": {
-    "exportDate": "2025-09-01T00:08:17.682Z",
+    "exportDate": "2025-09-01T01:08:57.531Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 9522.688000000002
+    "totalContribution": 10239.488000000001
   }
 }
