@@ -224,6 +224,10 @@
 
         function openUpdateModal() {
             document.getElementById('updateModal').style.display = 'block';
+            // Limpar campos ao abrir o modal
+            document.getElementById('drugsInput').value = '';
+            document.getElementById('dirtyMoneyInput').value = '';
+            document.getElementById('calculationResult').innerHTML = '';
         }
 
         function closeUpdateModal() {
@@ -232,22 +236,77 @@
             document.getElementById('memberSelect').value = '';
             document.getElementById('drugsInput').value = '';
             document.getElementById('dirtyMoneyInput').value = '';
+            document.getElementById('calculationResult').innerHTML = '';
         }
 
+        // Calcular valores com base na quantidade de drogas
+        function calculateFromDrugs(drugs) {
+            const dirtyMoney = drugs * DRUG_VALUE;
+            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
+            const cleanMoney = cleanMoneyBruto * 0.80;
+            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
+            
+            return {
+                drugs,
+                dirtyMoney,
+                cleanMoney,
+                contribution
+            };
+        }
+
+        // Calcular quantidade de drogas com base no dinheiro sujo
+        function calculateFromMoney(dirtyMoney) {
+            const drugs = Math.floor(dirtyMoney / DRUG_VALUE);
+            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
+            const cleanMoney = cleanMoneyBruto * 0.80;
+            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
+            
+            return {
+                drugs,
+                dirtyMoney,
+                cleanMoney,
+                contribution
+            };
+        }
+
+        // Mostrar os cálculos no modal
+        function showCalculations(result) {
+            const calculationResult = document.getElementById('calculationResult');
+            calculationResult.innerHTML = `
+                <div class="calculation-details">
+                    <h3>Detalhes do Cálculo:</h3>
+                    <p><strong>Drogas:</strong> ${result.drugs}</p>
+                    <p><strong>Dinheiro Sujo:</strong> ${formatMoney(result.dirtyMoney)}</p>
+                    <p><strong>Dinheiro Limpo:</strong> ${formatMoney(result.cleanMoney)}</p>
+                    <p><strong>Contribuição (${CONTRIBUTION_PERCENT}%):</strong> ${formatMoney(result.contribution)}</p>
+                </div>
+            `;
+        }
+
+        // Atualizar o progresso do membro
         function updateProgress() {
             const memberName = document.getElementById('memberSelect').value;
-            const drugs = parseInt(document.getElementById('drugsInput').value) || 0;
+            const drugsInput = document.getElementById('drugsInput').value;
+            const moneyInput = document.getElementById('dirtyMoneyInput').value;
             
             if (!memberName) {
                 alert('Selecione um membro da tripulação!');
                 return;
             }
 
-            // Calcular valores
-            const dirtyMoney = drugs * DRUG_VALUE;
-            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100); // 20% sobre o bruto
-            const cleanMoney = cleanMoneyBruto * 0.80; // 80% sobre o bruto
-            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100); // 20% sobre o líquido limpo
+            let result;
+            if (drugsInput) {
+                // Calcular a partir das drogas
+                const drugs = parseInt(drugsInput);
+                result = calculateFromDrugs(drugs);
+            } else if (moneyInput) {
+                // Calcular a partir do dinheiro
+                const dirtyMoney = parseInt(moneyInput);
+                result = calculateFromMoney(dirtyMoney);
+            } else {
+                alert('Digite a quantidade de drogas ou o valor em dinheiro!');
+                return;
+            }
 
             // Se o membro já existir, acumula. Senão, cria do zero
             if (!crewData[memberName]) {
@@ -260,10 +319,10 @@
             }
 
             const oldDrugs = crewData[memberName].drugs;
-            crewData[memberName].drugs += drugs;
-            crewData[memberName].dirtyMoney += dirtyMoney;
-            crewData[memberName].cleanMoney += cleanMoney;
-            crewData[memberName].contribution += contribution;
+            crewData[memberName].drugs += result.drugs;
+            crewData[memberName].dirtyMoney += result.dirtyMoney;
+            crewData[memberName].cleanMoney += result.cleanMoney;
+            crewData[memberName].contribution += result.contribution;
 
             // Salvar no localStorage
             saveCrewData();
@@ -329,11 +388,30 @@
             alert('📁 Arquivo crewData.json atualizado e pronto para download!');
         }
 
-        // Atualizar campo de dinheiro sujo automaticamente
+        // Atualizar campo de dinheiro sujo automaticamente quando digitar drogas
         document.getElementById('drugsInput').addEventListener('input', function() {
             const drugs = parseInt(this.value) || 0;
-            const dirtyMoney = drugs * DRUG_VALUE;
-            document.getElementById('dirtyMoneyInput').value = dirtyMoney;
+            if (drugs > 0) {
+                const result = calculateFromDrugs(drugs);
+                document.getElementById('dirtyMoneyInput').value = result.dirtyMoney;
+                showCalculations(result);
+            } else {
+                document.getElementById('dirtyMoneyInput').value = '';
+                document.getElementById('calculationResult').innerHTML = '';
+            }
+        });
+
+        // Atualizar campo de drogas automaticamente quando digitar dinheiro
+        document.getElementById('dirtyMoneyInput').addEventListener('input', function() {
+            const dirtyMoney = parseInt(this.value) || 0;
+            if (dirtyMoney > 0) {
+                const result = calculateFromMoney(dirtyMoney);
+                document.getElementById('drugsInput').value = result.drugs;
+                showCalculations(result);
+            } else {
+                document.getElementById('drugsInput').value = '';
+                document.getElementById('calculationResult').innerHTML = '';
+            }
         });
 
         // Fechar modal clicando fora
@@ -369,6 +447,6 @@
 
         // Inicializar
         loadCrewData();
-    </script>
+</script>
 </body>
 </html>
