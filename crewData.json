@@ -19,10 +19,10 @@
       "contribution": 391.93600000000004
     },
     "Black Caesar": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 214.28571428571428,
+      "dirtyMoney": 6000,
+      "cleanMoney": 3840,
+      "contribution": 768
     },
     "Django West": {
       "drugs": 604.4642857142857,
@@ -98,10 +98,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-01T14:57:04.573Z",
+    "exportDate": "2025-09-01T21:24:58.891Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 13013.376
+    "totalContribution": 13781.376
   }
 }
