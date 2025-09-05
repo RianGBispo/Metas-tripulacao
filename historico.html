@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="favicon.svg" type="image/svg">
+    <title>Hall da Fama - Lamento da Viúva</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            border-radius: 25px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #ffd700, #ffb347, #ffd700);
+            background-size: 200% 200%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: goldShine 3s ease-in-out infinite;
+        }
+
+        @keyframes goldShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .crown {
+            font-size: 4rem;
+            animation: float 3s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .summary-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .summary-label {
+            font-size: 1rem;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ffd700, #ffb347);
+            color: #1a1a2e;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.5);
+        }
+
+        .podium {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 50px;
+            align-items: end;
+        }
+
+        .podium-place {
+            text-align: center;
+            position: relative;
+        }
+
+        .podium-second {
+            order: 1;
+            height: 200px;
+        }
+
+        .podium-first {
+            order: 2;
+            height: 250px;
+        }
+
+        .podium-third {
+            order: 3;
+            height: 150px;
+        }
+
+        .podium-card {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px 20px 0 0;
+            padding: 25px 15px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(15px);
+        }
+
+        .podium-first .podium-card {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .podium-second .podium-card {
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.05));
+            border: 3px solid #c0c0c0;
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.3);
+        }
+
+        .podium-third .podium-card {
+            background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), rgba(205, 127, 50, 0.05));
+            border: 3px solid #cd7f32;
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.3);
+        }
+
+        .podium-position {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .podium-first .podium-position { color: #ffd700; }
+        .podium-second .podium-position { color: #c0c0c0; }
+        .podium-third .podium-position { color: #cd7f32; }
+
+        .podium-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .podium-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .podium-stat {
+            font-size: 0.9rem;
+            color: #cccccc;
+        }
+
+        .podium-stat-value {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .podium-medal {
+            position: absolute;
+            top: -15px;
+            right: 15px;
+            font-size: 2.5rem;
+            z-index: 3;
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+        }
+
+        .ranking-list {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            padding: 30px;
+            border: 2px solid #ffd700;
+            backdrop-filter: blur(10px);
+        }
+
+        .ranking-title {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .ranking-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .ranking-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            transform: translateX(5px);
+        }
+
+        .ranking-position {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffd700;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .ranking-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .ranking-drugs,
+        .ranking-money,
+        .ranking-contribution {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .ranking-value {
+            font-weight: bold;
+            color: #ffd700;
+            font-size: 1.1rem;
+        }
+
+        .ranking-label {
+            font-size: 0.8rem;
+            color: #cccccc;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            margin: 5% auto;
+            padding: 40px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 600px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .modal h3 {
+            color: #ffd700;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .close {
+            color: #ffd700;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #ffb347;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .podium { grid-template-columns: 1fr; }
+            .podium-place { order: initial !important; margin-bottom: 20px; }
+            .ranking-item { grid-template-columns: 1fr; text-align: center; gap: 10px; }
+            .stats-summary { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <div class="crown">☠️</div>
+                <h1>Hall da Fama</h1>
+                <p class="subtitle">Ranking Histórico - Lamento da Viúva 🏴‍☠️</p>
+                <p>Os maiores lendários de todos os tempos! ⚓</p>
+            </div>
+        </div>
+
+        <div class="stats-summary">
+            <div class="summary-card">
+                <div class="summary-value" id="totalMembers">0</div>
+                <div class="summary-label">Tripulantes</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value" id="totalDrugs">0</div>
+                <div class="summary-label">Drogas Vendidas</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value" id="totalMoney">$0</div>
+                <div class="summary-label">Dinheiro Movimentado</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value" id="totalContribution">$0</div>
+                <div class="summary-label">Contribuição Total</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="openAddModal()">📊 Adicionar Dados</button>
+            <button class="btn btn-secondary" onclick="window.location.href='index.html'">🗓️ Voltar ao Semanal</button>
+            <button class="btn btn-primary" onclick="resetHistoric()">🔥 Reset Histórico</button>
+            <button class="btn btn-primary" onclick="exportData()">📤 Exportar Dados</button>
+            <button class="btn btn-primary" onclick="triggerImport()">Importar Dados</button>
+            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importDataFromFile(event)">
+        </div>
+
+        <div class="podium" id="podium">
+            <!-- Top 3 será gerado aqui -->
+        </div>
+
+        <div class="ranking-list">
+            <h2 class="ranking-title">🏆 Ranking Completo</h2>
+            <div id="rankingList">
+                <!-- Lista completa será gerada aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar dados -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h3>⚓ Adicionar Dados Históricos</h3>
+            <div class="form-group">
+                <label for="memberName">Nome do Tripulante:</label>
+                <input type="text" id="memberName" placeholder="Digite o nome do tripulante">
+            </div>
+            <div class="form-group">
+                <label for="drugsAdd">Drogas Vendidas:</label>
+                <input type="number" id="drugsAdd" min="0" placeholder="Quantidade de drogas">
+            </div>
+            <div class="form-group">
+                <label for="moneyAdd">Dinheiro Sujo ($):</label>
+                <input type="number" id="moneyAdd" min="0" step="0.01" placeholder="Valor em dinheiro">
+            </div>
+            <button class="btn btn-primary" onclick="addHistoricData()" style="width: 100%; margin-top: 25px;">
+                💰 Adicionar ao Histórico
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let historicData = {};
+
+const DRUG_VALUE = 28;
+const WASHING_PERCENT = 20;
+const CONTRIBUTION_PERCENT = 20;
+
+// Carregar dados históricos
+async function loadHistoricData() {
+    try {
+        const response = await fetch('historicData.json');
+        if (response.ok) {
+            let jsonData = await response.json();
+            historicData = jsonData.historicData || jsonData;
+            console.log('Dados históricos carregados do arquivo:', historicData);
+        } else {
+            throw new Error('Arquivo não encontrado');
+        }
+    } catch (error) {
+        console.log('Carregando do localStorage:', error.message);
+        const savedData = localStorage.getItem('historicData');
+        if (savedData) {
+            historicData = JSON.parse(savedData);
+        } else {
+            historicData = {};
+        }
+    }
+    renderRanking();
+    updateSummary();
+}
+
+// Salvar dados históricos
+function saveHistoricData() {
+    localStorage.setItem('historicData', JSON.stringify(historicData));
+    
+    if (confirm('Deseja baixar uma cópia atualizada do arquivo historicData.json?')) {
+        exportData();
+    }
+}
+
+function formatMoney(amount) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(amount);
+}
+
+function calculateFromDrugs(drugs) {
+    const dirtyMoney = drugs * DRUG_VALUE;
+    const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
+    const cleanMoney = cleanMoneyBruto * 0.80;
+    const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
+    
+    return {
+        drugs: drugs,
+        dirtyMoney,
+        cleanMoney,
+        contribution
+    };
+}
+
+function calculateFromMoney(dirtyMoney) {
+    const drugs = dirtyMoney / DRUG_VALUE;
+    const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
+    const cleanMoney = cleanMoneyBruto * 0.80;
+    const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
+    
+    return {
+        drugs: drugs,
+        dirtyMoney: dirtyMoney,
+        cleanMoney,
+        contribution
+    };
+}
+
+function updateSummary() {
+    const members = Object.keys(historicData);
+    const totalDrugs = Object.values(historicData).reduce((sum, member) => sum + member.drugs, 0);
+    const totalMoney = Object.values(historicData).reduce((sum, member) => sum + member.dirtyMoney, 0);
+    const totalContribution = Object.values(historicData).reduce((sum, member) => sum + member.contribution, 0);
+
+    document.getElementById('totalMembers').textContent = members.length;
+    document.getElementById('totalDrugs').textContent = Math.round(totalDrugs).toLocaleString('pt-BR');
+    document.getElementById('totalMoney').textContent = formatMoney(totalMoney);
+    document.getElementById('totalContribution').textContent = formatMoney(totalContribution);
+}
+
+function renderRanking() {
+    const sortedMembers = Object.entries(historicData).sort((a, b) => b[1].drugs - a[1].drugs);
+    
+    console.log('Sorted Members:', sortedMembers); // Log para depuração
+    renderPodium(sortedMembers);
+    renderRankingList(sortedMembers);
+}
+
+function renderPodium(sortedMembers) {
+    const podium = document.getElementById('podium');
+    podium.innerHTML = '';
+
+    if (sortedMembers.length === 0) {
+        podium.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #888;">Nenhum dado histórico encontrado</div>';
+        return;
+    }
+
+    const positions = [
+        { class: 'podium-first', medal: '🥇', pos: '1º' },
+        { class: 'podium-second', medal: '🥈', pos: '2º' },
+        { class: 'podium-third', medal: '🥉', pos: '3º' }
+    ];
+
+    for (let i = 0; i < 3; i++) {
+        const podiumPlace = document.createElement('div');
+        podiumPlace.className = `podium-place ${positions[i].class}`;
+
+        if (i < sortedMembers.length) {
+            const [name, data] = sortedMembers[i];
+            podiumPlace.innerHTML = `
+                <div class="podium-card">
+                    <div class="podium-medal">${positions[i].medal}</div>
+                    <div class="podium-position">${positions[i].pos}</div>
+                    <div class="podium-name">${name}</div>
+                    <div class="podium-stats">
+                        <div class="podium-stat">
+                            <span class="podium-stat-value">${Math.round(data.drugs).toLocaleString('pt-BR')}</span><br>
+                            Drogas Vendidas
+                        </div>
+                        <div class="podium-stat">
+                            <span class="podium-stat-value">${formatMoney(data.dirtyMoney)}</span><br>
+                            Dinheiro Total
+                        </div>
+                        <div class="podium-stat">
+                            <span class="podium-stat-value">${formatMoney(data.contribution)}</span><br>
+                            Contribuição
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            podiumPlace.innerHTML = `
+                <div class="podium-card" style="opacity: 0.3;">
+                    <div class="podium-position">${positions[i].pos}</div>
+                    <div class="podium-name">Vazio</div>
+                </div>
+            `;
+        }
+        podium.appendChild(podiumPlace);
+    }
+}
+
+function renderRankingList(sortedMembers) {
+    const rankingList = document.getElementById('rankingList');
+    rankingList.innerHTML = '';
+
+    // Mostrar apenas do 4º lugar em diante
+    const remainingMembers = sortedMembers.slice(3);
+
+    if (remainingMembers.length === 0) {
+        rankingList.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">Apenas o pódio por enquanto...</div>';
+        return;
+    }
+
+    remainingMembers.forEach(([name, data], index) => {
+        const position = index + 4; // Começa do 4º lugar
+        const rankingItem = document.createElement('div');
+        rankingItem.className = 'ranking-item';
+        rankingItem.innerHTML = `
+            <div class="ranking-position">${position}º</div>
+            <div class="ranking-name">${name}</div>
+            <div class="ranking-drugs">
+                <div class="ranking-value">${Math.round(data.drugs).toLocaleString('pt-BR')}</div>
+                <div class="ranking-label">Drogas</div>
+            </div>
+            <div class="ranking-money">
+                <div class="ranking-value">${formatMoney(data.dirtyMoney)}</div>
+                <div class="ranking-label">Dinheiro</div>
+            </div>
+            <div class="ranking-contribution">
+                <div class="ranking-value">${formatMoney(data.contribution)}</div>
+                <div class="ranking-label">Contribuição</div>
+            </div>
+        `;
+        rankingList.appendChild(rankingItem);
+    });
+}
+
+function openAddModal() {
+    document.getElementById('addModal').style.display = 'block';
+    document.getElementById('memberName').value = '';
+    document.getElementById('drugsAdd').value = '';
+    document.getElementById('moneyAdd').value = '';
+}
+
+function closeAddModal() {
+    document.getElementById('addModal').style.display = 'none';
+}
+
+function addHistoricData() {
+    const memberName = document.getElementById('memberName').value.trim();
+    let drugsInput = document.getElementById('drugsAdd').value;
+    let moneyInput = document.getElementById('moneyAdd').value;
+
+    if (!memberName) {
+        alert('Digite o nome do tripulante!');
+        return;
+    }
+
+    // Remove separadores de milhares e converte vírgula para ponto
+    drugsInput = drugsInput.replace(/\./g, '').replace(',', '.');
+    moneyInput = moneyInput.replace(/\./g, '').replace(',', '.');
+
+    let result;
+    if (moneyInput) {
+        const dirtyMoney = parseFloat(moneyInput);
+        if (isNaN(dirtyMoney)) {
+            alert('Digite um valor válido para dinheiro!');
+            return;
+        }
+        result = calculateFromMoney(dirtyMoney);
+    } else if (drugsInput) {
+        const drugs = parseFloat(drugsInput);
+        if (isNaN(drugs)) {
+            alert('Digite uma quantidade válida de drogas!');
+            return;
+        }
+        result = calculateFromDrugs(drugs);
+    } else {
+        alert('Digite a quantidade de drogas ou o valor em dinheiro!');
+        return;
+    }
+
+    // Se o membro já existir, acumula
+    if (!historicData[memberName]) {
+        historicData[memberName] = {
+            drugs: 0,
+            dirtyMoney: 0,
+            cleanMoney: 0,
+            contribution: 0
+        };
+    }
+
+    historicData[memberName].drugs += result.drugs;
+    historicData[memberName].dirtyMoney += result.dirtyMoney;
+    historicData[memberName].cleanMoney += result.cleanMoney;
+    historicData[memberName].contribution += result.contribution;
+
+    console.log(`Adicionado para ${memberName}:`, result); // Log para depuração
+    console.log('Estado atual de historicData:', historicData); // Log para depuração
+
+    saveHistoricData();
+    renderRanking();
+    updateSummary();
+    closeAddModal();
+
+    alert(`⚓ Dados adicionados para ${memberName}!`);
+}
+
+function resetHistoric() {
+    if (confirm('⚠️ Tem certeza que deseja resetar TODOS os dados históricos? Esta ação é irreversível!')) {
+        if (confirm('🔥 ÚLTIMA CHANCE: Isso apagará permanentemente todo o histórico. Continuar?')) {
+            historicData = {};
+            saveHistoricData();
+            renderRanking();
+            updateSummary();
+            alert('🗑️ Histórico completamente resetado!');
+        }
+    }
+}
+
+function exportData() {
+    const exportData = {
+        historicData: historicData,
+        metadata: {
+            exportDate: new Date().toISOString(),
+            totalMembers: Object.keys(historicData).length,
+            totalDrugs: Object.values(historicData).reduce((sum, member) => sum + member.drugs, 0),
+            totalContribution: Object.values(historicData).reduce((sum, member) => sum + member.contribution, 0)
+        }
+    };
+    
+    const jsonData = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([jsonData], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'historicData.json';
+    document.body.appendChild(a);
+    a.click();
+    
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    alert('📁 Arquivo historicData.json exportado com sucesso!');
+}
+
+function importDataFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            historicData = importedData.historicData || importedData;
+            saveHistoricData();
+            renderRanking();
+            updateSummary();
+            alert('✅ Dados históricos importados com sucesso!');
+        } catch (error) {
+            alert('❌ Erro ao importar arquivo: ' + error.message);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function triggerImport() {
+    document.getElementById('fileInput').click();
+}
+
+// Calcular automaticamente quando digitar drogas
+document.getElementById('drugsAdd').addEventListener('input', function() {
+    let drugs = this.value.replace(/\./g, '').replace(',', '.');
+    drugs = parseFloat(drugs) || 0;
+    if (drugs > 0) {
+        const result = calculateFromDrugs(drugs);
+        document.getElementById('moneyAdd').value = result.dirtyMoney.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } else {
+        document.getElementById('moneyAdd').value = '';
+    }
+});
+
+// Calcular automaticamente quando digitar dinheiro
+document.getElementById('moneyAdd').addEventListener('input', function() {
+    let money = this.value.replace(/\./g, '').replace(',', '.');
+    money = parseFloat(money) || 0;
+    if (money > 0) {
+        const result = calculateFromMoney(money);
+        document.getElementById('drugsAdd').value = Math.round(result.drugs).toLocaleString('pt-BR');
+    } else {
+        document.getElementById('drugsAdd').value = '';
+    }
+});
+
+// Carregar dados ao iniciar
+loadHistoricData();
+    </script>
+</body>
+</html>
