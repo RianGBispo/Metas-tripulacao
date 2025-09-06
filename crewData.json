@@ -60,17 +60,17 @@
       "cleanMoney": 0,
       "contribution": 0
     },
-    "Coveiro Mcoy": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+    "Coveiro Mccoy": {
+      "drugs": 185.35714285714286,
+      "dirtyMoney": 5190,
+      "cleanMoney": 3321.6000000000004,
+      "contribution": 664.3200000000002
     },
     "Dias": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 223.42857142857142,
+      "dirtyMoney": 6256,
+      "cleanMoney": 4003.84,
+      "contribution": 800.768
     },
     "Jack Foster": {
       "drugs": 0,
@@ -103,10 +103,10 @@
       "contribution": 0
     },
     "Benedito Manches": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 334.85714285714283,
+      "dirtyMoney": 9376,
+      "cleanMoney": 6000.64,
+      "contribution": 1200.1280000000002
     },
     "John Cigan": {
       "drugs": 0,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-06T14:54:10.290Z",
+    "exportDate": "2025-09-06T21:32:05.794Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 2654.3577600000003
+    "totalContribution": 5319.573760000001
   }
 }
