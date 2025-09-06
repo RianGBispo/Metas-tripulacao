@@ -1,10 +1,10 @@
 {
   "crewData": {
     "Gale Kernel": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 437.0417857142857,
+      "dirtyMoney": 12237.17,
+      "cleanMoney": 7831.788800000001,
+      "contribution": 1566.3577600000003
     },
     "Edward Henway": {
       "drugs": 0,
@@ -25,10 +25,10 @@
       "contribution": 0
     },
     "Django West": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 303.57142857142856,
+      "dirtyMoney": 8500,
+      "cleanMoney": 5440,
+      "contribution": 1088
     },
     "Finn o Ruivo": {
       "drugs": 0,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-02T12:17:56.184Z",
+    "exportDate": "2025-09-06T14:54:10.290Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 0
+    "totalContribution": 2654.3577600000003
   }
 }
