@@ -37,10 +37,10 @@
       "contribution": 0
     },
     "Robert Bob": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 121.75,
+      "dirtyMoney": 3409,
+      "cleanMoney": 2181.76,
+      "contribution": 436.3520000000001
     },
     "Addeh": {
       "drugs": 0,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-07T21:42:40.265Z",
+    "exportDate": "2025-09-07T21:44:25.195Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 7127.38176
+    "totalContribution": 7563.733760000001
   }
 }
