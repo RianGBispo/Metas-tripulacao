@@ -49,10 +49,10 @@
       "contribution": 0
     },
     "Kalton Peall": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 298.39285714285717,
+      "dirtyMoney": 8355,
+      "cleanMoney": 5347.200000000001,
+      "contribution": 1069.4400000000003
     },
     "Constantine Basso": {
       "drugs": 199.14285714285714,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-07T21:44:25.195Z",
+    "exportDate": "2025-09-07T21:45:49.488Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 7563.733760000001
+    "totalContribution": 8633.173760000001
   }
 }
