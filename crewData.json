@@ -55,16 +55,16 @@
       "contribution": 0
     },
     "Constantine Basso": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 199.14285714285714,
+      "dirtyMoney": 5576,
+      "cleanMoney": 3568.6400000000003,
+      "contribution": 713.7280000000001
     },
     "Coveiro Mccoy": {
-      "drugs": 185.35714285714286,
-      "dirtyMoney": 5190,
-      "cleanMoney": 3321.6000000000004,
-      "contribution": 664.3200000000002
+      "drugs": 490.625,
+      "dirtyMoney": 13737.5,
+      "cleanMoney": 8792,
+      "contribution": 1758.4000000000003
     },
     "Dias": {
       "drugs": 223.42857142857142,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-06T21:32:05.794Z",
+    "exportDate": "2025-09-07T21:42:40.265Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 5319.573760000001
+    "totalContribution": 7127.38176
   }
 }
