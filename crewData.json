@@ -1,10 +1,10 @@
 {
   "crewData": {
     "Gale Kernel": {
-      "drugs": 437.0417857142857,
-      "dirtyMoney": 12237.17,
-      "cleanMoney": 7831.788800000001,
-      "contribution": 1566.3577600000003
+      "drugs": 656.5239285714285,
+      "dirtyMoney": 18382.67,
+      "cleanMoney": 11764.908800000001,
+      "contribution": 2352.9817600000006
     },
     "Edward Henway": {
       "drugs": 0,
@@ -49,10 +49,10 @@
       "contribution": 0
     },
     "Kalton Peall": {
-      "drugs": 298.39285714285717,
-      "dirtyMoney": 8355,
-      "cleanMoney": 5347.200000000001,
-      "contribution": 1069.4400000000003
+      "drugs": 472.64285714285717,
+      "dirtyMoney": 13234,
+      "cleanMoney": 8469.760000000002,
+      "contribution": 1693.9520000000005
     },
     "Constantine Basso": {
       "drugs": 199.14285714285714,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-08T16:40:30.134Z",
+    "exportDate": "2025-09-08T21:16:54.721Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 10809.173760000001
+    "totalContribution": 12220.309760000002
   }
 }
