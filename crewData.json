@@ -7,10 +7,10 @@
       "contribution": 2170.5676800000006
     },
     "Edward Henway": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 144.375,
+      "dirtyMoney": 4042.5,
+      "cleanMoney": 2587.2000000000003,
+      "contribution": 517.44
     },
     "Oliver Smith": {
       "drugs": 0,
@@ -55,10 +55,10 @@
       "contribution": 1693.9520000000005
     },
     "Constantine Basso": {
-      "drugs": 199.14285714285714,
-      "dirtyMoney": 5576,
-      "cleanMoney": 3568.6400000000003,
-      "contribution": 713.7280000000001
+      "drugs": 299.1428571428571,
+      "dirtyMoney": 8376,
+      "cleanMoney": 5360.64,
+      "contribution": 1072.1280000000002
     },
     "Coveiro Mccoy": {
       "drugs": 490.625,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-09T02:10:50.210Z",
+    "exportDate": "2025-09-10T01:03:34.618Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 12685.440000000002
+    "totalContribution": 14406.53568
   }
 }
