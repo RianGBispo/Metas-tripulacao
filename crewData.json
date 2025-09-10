@@ -73,10 +73,10 @@
       "contribution": 1234.88
     },
     "Aurora Castell": {
-      "drugs": 0,
-      "dirtyMoney": 0,
-      "cleanMoney": 0,
-      "contribution": 0
+      "drugs": 132.05357142857142,
+      "dirtyMoney": 3697.5,
+      "cleanMoney": 2366.4,
+      "contribution": 473.28000000000003
     },
     "Jhon Kramer": {
       "drugs": 0,
@@ -116,10 +116,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-10T04:22:15.227Z",
+    "exportDate": "2025-09-10T04:24:28.373Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 13636.167680000002
+    "totalContribution": 14109.447680000003
   }
 }
