@@ -43,10 +43,10 @@
       "contribution": 0
     },
     "Kalton Peall": {
-      "drugs": 472.64285714285717,
-      "dirtyMoney": 13234,
-      "cleanMoney": 8469.760000000002,
-      "contribution": 1693.9520000000005
+      "drugs": 576.6071428571429,
+      "dirtyMoney": 16145,
+      "cleanMoney": 10332.800000000003,
+      "contribution": 2066.5600000000004
     },
     "Constantine Basso": {
       "drugs": 299.1428571428571,
@@ -85,10 +85,10 @@
       "contribution": 1088
     },
     "Melissa White": {
-      "drugs": 303.57142857142856,
-      "dirtyMoney": 8500,
-      "cleanMoney": 5440,
-      "contribution": 1088
+      "drugs": 388.32142857142856,
+      "dirtyMoney": 10873,
+      "cleanMoney": 6958.72,
+      "contribution": 1391.7440000000001
     },
     "Juvenal Gattone": {
       "drugs": 0,
@@ -110,10 +110,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-10T04:24:28.373Z",
+    "exportDate": "2025-09-11T17:47:58.551Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 14109.447680000003
+    "totalContribution": 14785.799680000004
   }
 }
