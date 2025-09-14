@@ -1,16 +1,16 @@
 {
   "crewData": {
     "Gale Kernel": {
-      "drugs": 1145.3235714285715,
-      "dirtyMoney": 32069.06,
-      "cleanMoney": 20524.1984,
-      "contribution": 4104.839680000001
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Edward Henway": {
-      "drugs": 144.375,
-      "dirtyMoney": 4042.5,
-      "cleanMoney": 2587.2000000000003,
-      "contribution": 517.44
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Oliver Smith": {
       "drugs": 0,
@@ -19,10 +19,10 @@
       "contribution": 0
     },
     "Django West": {
-      "drugs": 303.57142857142856,
-      "dirtyMoney": 8500,
-      "cleanMoney": 5440,
-      "contribution": 1088
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Finn o Ruivo": {
       "drugs": 0,
@@ -31,10 +31,10 @@
       "contribution": 0
     },
     "Robert Bob": {
-      "drugs": 121.75,
-      "dirtyMoney": 3409,
-      "cleanMoney": 2181.76,
-      "contribution": 436.3520000000001
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Addeh": {
       "drugs": 0,
@@ -43,34 +43,34 @@
       "contribution": 0
     },
     "Kalton Peall": {
-      "drugs": 576.6071428571429,
-      "dirtyMoney": 16145,
-      "cleanMoney": 10332.800000000003,
-      "contribution": 2066.5600000000004
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Constantine Basso": {
-      "drugs": 299.1428571428571,
-      "dirtyMoney": 8376,
-      "cleanMoney": 5360.64,
-      "contribution": 1072.1280000000002
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Coveiro Mccoy": {
-      "drugs": 305.26785714285717,
-      "dirtyMoney": 8547.5,
-      "cleanMoney": 5470.400000000001,
-      "contribution": 1094.0800000000002
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Dias": {
-      "drugs": 344.55357142857144,
-      "dirtyMoney": 9647.5,
-      "cleanMoney": 6174.400000000001,
-      "contribution": 1234.88
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Aurora Castell": {
-      "drugs": 132.05357142857142,
-      "dirtyMoney": 3697.5,
-      "cleanMoney": 2366.4,
-      "contribution": 473.28000000000003
+      "drugs": 87.32142857142857,
+      "dirtyMoney": 2445,
+      "cleanMoney": 1564.8000000000002,
+      "contribution": 312.96000000000004
     },
     "Jhon Kramer": {
       "drugs": 0,
@@ -79,16 +79,16 @@
       "contribution": 0
     },
     "Mota Rockefeller": {
-      "drugs": 303.57142857142856,
-      "dirtyMoney": 8500,
-      "cleanMoney": 5440,
-      "contribution": 1088
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Melissa White": {
-      "drugs": 388.32142857142856,
-      "dirtyMoney": 10873,
-      "cleanMoney": 6958.72,
-      "contribution": 1391.7440000000001
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "Juvenal Gattone": {
       "drugs": 0,
@@ -97,10 +97,10 @@
       "contribution": 0
     },
     "Benedito Manches": {
-      "drugs": 334.85714285714283,
-      "dirtyMoney": 9376,
-      "cleanMoney": 6000.64,
-      "contribution": 1200.1280000000002
+      "drugs": 0,
+      "dirtyMoney": 0,
+      "cleanMoney": 0,
+      "contribution": 0
     },
     "John Cigan": {
       "drugs": 0,
@@ -110,10 +110,10 @@
     }
   },
   "metadata": {
-    "exportDate": "2025-09-11T18:03:15.680Z",
+    "exportDate": "2025-09-14T03:45:31.761Z",
     "minimumDrugs": 250,
     "targetDrugs": 500,
     "drugValue": 28,
-    "totalContribution": 15767.431680000005
+    "totalContribution": 312.96000000000004
   }
 }
