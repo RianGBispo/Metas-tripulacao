@@ -260,29 +260,27 @@
         // Calcular valores com base na quantidade de drogas (mantém drogas exatas internamente)
         function calculateFromDrugs(drugs) {
             const dirtyMoney = drugs * DRUG_VALUE;
-            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
-            const cleanMoney = cleanMoneyBruto * 0.80;
+            const cleanMoney = dirtyMoney * (1 - WASHING_PERCENT / 100);
             const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
 
             return {
-                drugs: drugs, // Mantém o valor exato das drogas
+                drugs: drugs,
                 dirtyMoney,
-                cleanMoney,
+                cleanMoney: cleanMoney - contribution, // dinheiro limpo do indivíduo
                 contribution
             };
         }
 
         // Calcular quantidade de drogas com base no dinheiro sujo (mantém dinheiro exato)
         function calculateFromMoney(dirtyMoney) {
-            const drugs = dirtyMoney / DRUG_VALUE; // Mantém valor exato das drogas
-            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
-            const cleanMoney = cleanMoneyBruto * 0.80;
+            const drugs = dirtyMoney / DRUG_VALUE;
+            const cleanMoney = dirtyMoney * (1 - WASHING_PERCENT / 100);
             const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
 
             return {
-                drugs: drugs, // Valor exato das drogas (pode ter decimais)
-                dirtyMoney: dirtyMoney, // Valor exato do dinheiro
-                cleanMoney,
+                drugs: drugs,
+                dirtyMoney: dirtyMoney,
+                cleanMoney: cleanMoney - contribution, // dinheiro limpo do indivíduo
                 contribution
             };
         }
