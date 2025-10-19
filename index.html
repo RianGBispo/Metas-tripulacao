@@ -102,28 +102,31 @@
         // Carregar dados - primeiro tenta do arquivo JSON, depois do localStorage como fallback
         async function loadCrewData() {
             try {
-                // Link público da sua planilha Google Sheets publicada como CSV
                 const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSMfPn__bpiFiVzeLgUtuuzHs1jy7cWCYkqQrHHHHkxh0i6yyhod-RwFY1Hdlt1oe06VGSlJCFHbEnz/pub?output=csv';
                 const response = await fetch(csvUrl);
                 if (!response.ok) throw new Error('Erro ao buscar planilha');
                 const csvText = await response.text();
 
-                // Parse simples do CSV (esperando colunas: Nome, Drogas, DinheiroSujo)
                 crewData = {};
                 const lines = csvText.trim().split('\n');
                 const headers = lines[0].split(',');
+
                 for (let i = 1; i < lines.length; i++) {
                     const cols = lines[i].split(',');
                     const name = cols[0];
                     const drugs = parseFloat(cols[1]) || 0;
-                    const dirtyMoney = parseFloat(cols[2]) || 0;
-                    // Calcula os outros campos como antes
-                    const result = calculateFromDrugs(drugs);
+                    const dirtyMoney = parseFloat(cols[2]) || 0; // Dinheiro sujo da planilha
+
+                    // Cálculos simplificados
+                    const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
+                    const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
+                    const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
+
                     crewData[name] = {
                         drugs: drugs,
                         dirtyMoney: dirtyMoney,
-                        cleanMoney: result.cleanMoney,
-                        contribution: result.contribution
+                        cleanMoney: finalCleanMoney,
+                        contribution: contribution
                     };
                 }
                 renderCrew();
@@ -257,31 +260,32 @@
             document.getElementById('calculationResult').innerHTML = '';
         }
 
-        // Calcular valores com base na quantidade de drogas (mantém drogas exatas internamente)
-        function calculateFromDrugs(drugs) {
-            const dirtyMoney = drugs * DRUG_VALUE;
-            const cleanMoney = dirtyMoney * (1 - WASHING_PERCENT / 100);
-            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
+        // Função para calcular valores a partir do dinheiro sujo
+        function calculateFromMoney(dirtyMoney) {
+            const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
+            const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
+            const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
 
             return {
-                drugs: drugs,
-                dirtyMoney,
-                cleanMoney: cleanMoney - contribution, // dinheiro limpo do indivíduo
-                contribution
+                drugs: dirtyMoney / DRUG_VALUE,
+                dirtyMoney: dirtyMoney,
+                cleanMoney: finalCleanMoney,
+                contribution: contribution
             };
         }
 
-        // Calcular quantidade de drogas com base no dinheiro sujo (mantém dinheiro exato)
-        function calculateFromMoney(dirtyMoney) {
-            const drugs = dirtyMoney / DRUG_VALUE;
-            const cleanMoney = dirtyMoney * (1 - WASHING_PERCENT / 100);
-            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
+        // Função para calcular valores a partir das drogas
+        function calculateFromDrugs(drugs) {
+            const dirtyMoney = drugs * DRUG_VALUE;
+            const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
+            const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
+            const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
 
             return {
                 drugs: drugs,
                 dirtyMoney: dirtyMoney,
-                cleanMoney: cleanMoney - contribution, // dinheiro limpo do indivíduo
-                contribution
+                cleanMoney: finalCleanMoney,
+                contribution: contribution
             };
         }
 
