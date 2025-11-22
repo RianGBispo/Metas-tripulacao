@@ -102,7 +102,7 @@
         // Carregar dados - primeiro tenta do arquivo JSON, depois do localStorage como fallback
         async function loadCrewData() {
             try {
-                const csvUrl = 'https://docs.google.com/spreadsheets/d/1nTtm63rHntqpyVMrdbz8J7o1xKL7RdXdp320k_NlP-I/edit?usp=sharing?output=csv';
+                const csvUrl = 'https://docs.google.com/spreadsheets/d/1nTtm63rHntqpyVMrdbz8J7o1xKL7RdXdp320k_NlP-I/?output=csv';
                 const response = await fetch(csvUrl);
                 if (!response.ok) throw new Error('Erro ao buscar planilha');
                 const csvText = await response.text();
