@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,8 +55,13 @@
         }
 
         @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .header h1 {
@@ -71,8 +77,15 @@
         }
 
         @keyframes goldShine {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .crown {
@@ -83,8 +96,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
         }
 
         .subtitle {
@@ -236,9 +256,17 @@
             margin-bottom: 10px;
         }
 
-        .podium-first .podium-position { color: #ffd700; }
-        .podium-second .podium-position { color: #c0c0c0; }
-        .podium-third .podium-position { color: #cd7f32; }
+        .podium-first .podium-position {
+            color: #ffd700;
+        }
+
+        .podium-second .podium-position {
+            color: #c0c0c0;
+        }
+
+        .podium-third .podium-position {
+            color: #cd7f32;
+        }
 
         .podium-name {
             font-size: 1.3rem;
@@ -419,14 +447,32 @@
         }
 
         @media (max-width: 768px) {
-            .header h1 { font-size: 2rem; }
-            .podium { grid-template-columns: 1fr; }
-            .podium-place { order: initial !important; margin-bottom: 20px; }
-            .ranking-item { grid-template-columns: 1fr; text-align: center; gap: 10px; }
-            .stats-summary { grid-template-columns: 1fr; }
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .podium {
+                grid-template-columns: 1fr;
+            }
+
+            .podium-place {
+                order: initial !important;
+                margin-bottom: 20px;
+            }
+
+            .ranking-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -445,7 +491,7 @@
             </div>
             <div class="summary-card">
                 <div class="summary-value" id="totalDrugs">0</div>
-                <div class="summary-label">Drogas Vendidas</div>
+                <div class="summary-label">Moedas de Guarma Coletadas</div>
             </div>
             <div class="summary-card">
                 <div class="summary-value" id="totalMoney">$0</div>
@@ -488,8 +534,8 @@
                 <input type="text" id="memberName" placeholder="Digite o nome do tripulante">
             </div>
             <div class="form-group">
-                <label for="drugsAdd">Drogas Vendidas:</label>
-                <input type="number" id="drugsAdd" min="0" placeholder="Quantidade de drogas">
+                <label for="drugsAdd">Moedas de Guarma Coletadas:</label>
+                <input type="number" id="drugsAdd" min="0" placeholder="Quantidade de Moedas de Guarma">
             </div>
             <div class="form-group">
                 <label for="moneyAdd">Dinheiro Sujo ($):</label>
@@ -504,130 +550,130 @@
     <script>
         let historicData = {};
 
-const DRUG_VALUE = 28;
-const WASHING_PERCENT = 20;
-const CONTRIBUTION_PERCENT = 20;
+        const DRUG_VALUE = 4;
+        const WASHING_PERCENT = 20;
+        const CONTRIBUTION_PERCENT = 20;
 
-// Carregar dados históricos
-async function loadHistoricData() {
-    try {
-        const response = await fetch('historicData.json');
-        if (response.ok) {
-            let jsonData = await response.json();
-            historicData = jsonData.historicData || jsonData;
-            console.log('Dados históricos carregados do arquivo:', historicData);
-        } else {
-            throw new Error('Arquivo não encontrado');
+        // Carregar dados históricos
+        async function loadHistoricData() {
+            try {
+                const response = await fetch('historicData.json');
+                if (response.ok) {
+                    let jsonData = await response.json();
+                    historicData = jsonData.historicData || jsonData;
+                    console.log('Dados históricos carregados do arquivo:', historicData);
+                } else {
+                    throw new Error('Arquivo não encontrado');
+                }
+            } catch (error) {
+                console.log('Carregando do localStorage:', error.message);
+                const savedData = localStorage.getItem('historicData');
+                if (savedData) {
+                    historicData = JSON.parse(savedData);
+                } else {
+                    historicData = {};
+                }
+            }
+            renderRanking();
+            updateSummary();
         }
-    } catch (error) {
-        console.log('Carregando do localStorage:', error.message);
-        const savedData = localStorage.getItem('historicData');
-        if (savedData) {
-            historicData = JSON.parse(savedData);
-        } else {
-            historicData = {};
+
+        // Salvar dados históricos
+        function saveHistoricData() {
+            localStorage.setItem('historicData', JSON.stringify(historicData));
+
+            if (confirm('Deseja baixar uma cópia atualizada do arquivo historicData.json?')) {
+                exportData();
+            }
         }
-    }
-    renderRanking();
-    updateSummary();
-}
 
-// Salvar dados históricos
-function saveHistoricData() {
-    localStorage.setItem('historicData', JSON.stringify(historicData));
-    
-    if (confirm('Deseja baixar uma cópia atualizada do arquivo historicData.json?')) {
-        exportData();
-    }
-}
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
+        }
 
-function formatMoney(amount) {
-    return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(amount);
-}
+        function calculateFromDrugs(coins) {
+            const dirtyMoney = coins * DRUG_VALUE;
+            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
+            const cleanMoney = cleanMoneyBruto * 0.80;
+            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
 
-function calculateFromDrugs(drugs) {
-    const dirtyMoney = drugs * DRUG_VALUE;
-    const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
-    const cleanMoney = cleanMoneyBruto * 0.80;
-    const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
-    
-    return {
-        drugs: drugs,
-        dirtyMoney,
-        cleanMoney,
-        contribution
-    };
-}
+            return {
+                coins: coins,
+                dirtyMoney,
+                cleanMoney,
+                contribution
+            };
+        }
 
-function calculateFromMoney(dirtyMoney) {
-    const drugs = dirtyMoney / DRUG_VALUE;
-    const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
-    const cleanMoney = cleanMoneyBruto * 0.80;
-    const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
-    
-    return {
-        drugs: drugs,
-        dirtyMoney: dirtyMoney,
-        cleanMoney,
-        contribution
-    };
-}
+        function calculateFromMoney(dirtyMoney) {
+            const coins = dirtyMoney / DRUG_VALUE;
+            const cleanMoneyBruto = dirtyMoney * (1 - WASHING_PERCENT / 100);
+            const cleanMoney = cleanMoneyBruto * 0.80;
+            const contribution = cleanMoney * (CONTRIBUTION_PERCENT / 100);
 
-function updateSummary() {
-    const members = Object.keys(historicData);
-    const totalDrugs = Object.values(historicData).reduce((sum, member) => sum + member.drugs, 0);
-    const totalMoney = Object.values(historicData).reduce((sum, member) => sum + member.dirtyMoney, 0);
-    const totalContribution = Object.values(historicData).reduce((sum, member) => sum + member.contribution, 0);
+            return {
+                coins: coins,
+                dirtyMoney: dirtyMoney,
+                cleanMoney,
+                contribution
+            };
+        }
 
-    document.getElementById('totalMembers').textContent = members.length;
-    document.getElementById('totalDrugs').textContent = Math.round(totalDrugs).toLocaleString('pt-BR');
-    document.getElementById('totalMoney').textContent = formatMoney(totalMoney);
-    document.getElementById('totalContribution').textContent = formatMoney(totalContribution);
-}
+        function updateSummary() {
+            const members = Object.keys(historicData);
+            const totalCoins = Object.values(historicData).reduce((sum, member) => sum + (member.coins !== undefined ? member.coins : member.drugs), 0);
+            const totalMoney = Object.values(historicData).reduce((sum, member) => sum + member.dirtyMoney, 0);
+            const totalContribution = Object.values(historicData).reduce((sum, member) => sum + member.contribution, 0);
 
-function renderRanking() {
-    const sortedMembers = Object.entries(historicData).sort((a, b) => b[1].drugs - a[1].drugs);
-    
-    console.log('Sorted Members:', sortedMembers); // Log para depuração
-    renderPodium(sortedMembers);
-    renderRankingList(sortedMembers);
-}
+            document.getElementById('totalMembers').textContent = members.length;
+            document.getElementById('totalDrugs').textContent = Math.round(totalCoins).toLocaleString('pt-BR');
+            document.getElementById('totalMoney').textContent = formatMoney(totalMoney);
+            document.getElementById('totalContribution').textContent = formatMoney(totalContribution);
+        }
 
-function renderPodium(sortedMembers) {
-    const podium = document.getElementById('podium');
-    podium.innerHTML = '';
+        function renderRanking() {
+            const sortedMembers = Object.entries(historicData).sort((a, b) => (b[1].coins || b[1].drugs || 0) - (a[1].coins || a[1].drugs || 0));
 
-    if (sortedMembers.length === 0) {
-        podium.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #888;">Nenhum dado histórico encontrado</div>';
-        return;
-    }
+            console.log('Sorted Members:', sortedMembers); // Log para depuração
+            renderPodium(sortedMembers);
+            renderRankingList(sortedMembers);
+        }
 
-    const positions = [
-        { class: 'podium-first', medal: '🥇', pos: '1º' },
-        { class: 'podium-second', medal: '🥈', pos: '2º' },
-        { class: 'podium-third', medal: '🥉', pos: '3º' }
-    ];
+        function renderPodium(sortedMembers) {
+            const podium = document.getElementById('podium');
+            podium.innerHTML = '';
 
-    for (let i = 0; i < 3; i++) {
-        const podiumPlace = document.createElement('div');
-        podiumPlace.className = `podium-place ${positions[i].class}`;
+            if (sortedMembers.length === 0) {
+                podium.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; color: #888;">Nenhum dado histórico encontrado</div>';
+                return;
+            }
 
-        if (i < sortedMembers.length) {
-            const [name, data] = sortedMembers[i];
-            podiumPlace.innerHTML = `
+            const positions = [
+                { class: 'podium-first', medal: '🥇', pos: '1º' },
+                { class: 'podium-second', medal: '🥈', pos: '2º' },
+                { class: 'podium-third', medal: '🥉', pos: '3º' }
+            ];
+
+            for (let i = 0; i < 3; i++) {
+                const podiumPlace = document.createElement('div');
+                podiumPlace.className = `podium-place ${positions[i].class}`;
+
+                if (i < sortedMembers.length) {
+                    const [name, data] = sortedMembers[i];
+                    podiumPlace.innerHTML = `
                 <div class="podium-card">
                     <div class="podium-medal">${positions[i].medal}</div>
                     <div class="podium-position">${positions[i].pos}</div>
                     <div class="podium-name">${name}</div>
                     <div class="podium-stats">
                         <div class="podium-stat">
-                            <span class="podium-stat-value">${Math.round(data.drugs).toLocaleString('pt-BR')}</span><br>
-                            Drogas Vendidas
+                            <span class="podium-stat-value">${Math.round(data.coins || data.drugs).toLocaleString('pt-BR')}</span><br>
+                            Moedas de Guarma
                         </div>
                         <div class="podium-stat">
                             <span class="podium-stat-value">${formatMoney(data.dirtyMoney)}</span><br>
@@ -640,40 +686,40 @@ function renderPodium(sortedMembers) {
                     </div>
                 </div>
             `;
-        } else {
-            podiumPlace.innerHTML = `
+                } else {
+                    podiumPlace.innerHTML = `
                 <div class="podium-card" style="opacity: 0.3;">
                     <div class="podium-position">${positions[i].pos}</div>
                     <div class="podium-name">Vazio</div>
                 </div>
             `;
+                }
+                podium.appendChild(podiumPlace);
+            }
         }
-        podium.appendChild(podiumPlace);
-    }
-}
 
-function renderRankingList(sortedMembers) {
-    const rankingList = document.getElementById('rankingList');
-    rankingList.innerHTML = '';
+        function renderRankingList(sortedMembers) {
+            const rankingList = document.getElementById('rankingList');
+            rankingList.innerHTML = '';
 
-    // Mostrar apenas do 4º lugar em diante
-    const remainingMembers = sortedMembers.slice(3);
+            // Mostrar apenas do 4º lugar em diante
+            const remainingMembers = sortedMembers.slice(3);
 
-    if (remainingMembers.length === 0) {
-        rankingList.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">Apenas o pódio por enquanto...</div>';
-        return;
-    }
+            if (remainingMembers.length === 0) {
+                rankingList.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">Apenas o pódio por enquanto...</div>';
+                return;
+            }
 
-    remainingMembers.forEach(([name, data], index) => {
-        const position = index + 4; // Começa do 4º lugar
-        const rankingItem = document.createElement('div');
-        rankingItem.className = 'ranking-item';
-        rankingItem.innerHTML = `
+            remainingMembers.forEach(([name, data], index) => {
+                const position = index + 4; // Começa do 4º lugar
+                const rankingItem = document.createElement('div');
+                rankingItem.className = 'ranking-item';
+                rankingItem.innerHTML = `
             <div class="ranking-position">${position}º</div>
             <div class="ranking-name">${name}</div>
-            <div class="ranking-drugs">
-                <div class="ranking-value">${Math.round(data.drugs).toLocaleString('pt-BR')}</div>
-                <div class="ranking-label">Drogas</div>
+            <div class="ranking-coins">
+                <div class="ranking-value">${Math.round(data.coins || data.drugs).toLocaleString('pt-BR')}</div>
+                <div class="ranking-label">Moedas de Guarma</div>
             </div>
             <div class="ranking-money">
                 <div class="ranking-value">${formatMoney(data.dirtyMoney)}</div>
@@ -684,170 +730,182 @@ function renderRankingList(sortedMembers) {
                 <div class="ranking-label">Contribuição</div>
             </div>
         `;
-        rankingList.appendChild(rankingItem);
-    });
-}
-
-function openAddModal() {
-    document.getElementById('addModal').style.display = 'block';
-    document.getElementById('memberName').value = '';
-    document.getElementById('drugsAdd').value = '';
-    document.getElementById('moneyAdd').value = '';
-}
-
-function closeAddModal() {
-    document.getElementById('addModal').style.display = 'none';
-}
-
-function addHistoricData() {
-    const memberName = document.getElementById('memberName').value.trim();
-    let drugsInput = document.getElementById('drugsAdd').value;
-    let moneyInput = document.getElementById('moneyAdd').value;
-
-    if (!memberName) {
-        alert('Digite o nome do tripulante!');
-        return;
-    }
-
-    // Remove separadores de milhares e converte vírgula para ponto
-    drugsInput = drugsInput.replace(/\./g, '').replace(',', '.');
-    moneyInput = moneyInput.replace(/\./g, '').replace(',', '.');
-
-    let result;
-    if (moneyInput) {
-        const dirtyMoney = parseFloat(moneyInput);
-        if (isNaN(dirtyMoney)) {
-            alert('Digite um valor válido para dinheiro!');
-            return;
+                rankingList.appendChild(rankingItem);
+            });
         }
-        result = calculateFromMoney(dirtyMoney);
-    } else if (drugsInput) {
-        const drugs = parseFloat(drugsInput);
-        if (isNaN(drugs)) {
-            alert('Digite uma quantidade válida de drogas!');
-            return;
+
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'block';
+            document.getElementById('memberName').value = '';
+            document.getElementById('drugsAdd').value = '';
+            document.getElementById('moneyAdd').value = '';
         }
-        result = calculateFromDrugs(drugs);
-    } else {
-        alert('Digite a quantidade de drogas ou o valor em dinheiro!');
-        return;
-    }
 
-    // Se o membro já existir, acumula
-    if (!historicData[memberName]) {
-        historicData[memberName] = {
-            drugs: 0,
-            dirtyMoney: 0,
-            cleanMoney: 0,
-            contribution: 0
-        };
-    }
+        function closeAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+        }
 
-    historicData[memberName].drugs += result.drugs;
-    historicData[memberName].dirtyMoney += result.dirtyMoney;
-    historicData[memberName].cleanMoney += result.cleanMoney;
-    historicData[memberName].contribution += result.contribution;
+        function addHistoricData() {
+            const memberName = document.getElementById('memberName').value.trim();
+            let drugsInput = document.getElementById('drugsAdd').value;
+            let moneyInput = document.getElementById('moneyAdd').value;
 
-    console.log(`Adicionado para ${memberName}:`, result); // Log para depuração
-    console.log('Estado atual de historicData:', historicData); // Log para depuração
+            if (!memberName) {
+                alert('Digite o nome do tripulante!');
+                return;
+            }
 
-    saveHistoricData();
-    renderRanking();
-    updateSummary();
-    closeAddModal();
+            // Remove separadores de milhares e converte vírgula para ponto
+            coinsInput = coinsInput.replace(/\./g, '').replace(',', '.');
+            moneyInput = moneyInput.replace(/\./g, '').replace(',', '.');
 
-    alert(`⚓ Dados adicionados para ${memberName}!`);
-}
+            let result;
+            if (moneyInput) {
+                const dirtyMoney = parseFloat(moneyInput);
+                if (isNaN(dirtyMoney)) {
+                    alert('Digite um valor válido para dinheiro!');
+                    return;
+                }
+                result = calculateFromMoney(dirtyMoney);
+            } else if (coinsInput) {
+                const coins = parseFloat(coinsInput);
+                if (isNaN(coins)) {
+                    alert('Digite uma quantidade válida de Moedas de Guarma!');
+                    return;
+                }
+                result = calculateFromDrugs(coins);
+            } else {
+                alert('Digite a quantidade de Moedas de Guarma ou o valor em dinheiro!');
+                return;
+            }
 
-function resetHistoric() {
-    if (confirm('⚠️ Tem certeza que deseja resetar TODOS os dados históricos? Esta ação é irreversível!')) {
-        if (confirm('🔥 ÚLTIMA CHANCE: Isso apagará permanentemente todo o histórico. Continuar?')) {
-            historicData = {};
+            // Se o membro já existir, acumula
+            if (!historicData[memberName]) {
+                historicData[memberName] = {
+                    coins: 0,
+                    dirtyMoney: 0,
+                    cleanMoney: 0,
+                    contribution: 0
+                };
+            }
+
+            historicData[memberName].coins += result.coins;
+            historicData[memberName].dirtyMoney += result.dirtyMoney;
+            historicData[memberName].cleanMoney += result.cleanMoney;
+            historicData[memberName].contribution += result.contribution;
+
+            console.log(`Adicionado para ${memberName}:`, result); // Log para depuração
+            console.log('Estado atual de historicData:', historicData); // Log para depuração
+
             saveHistoricData();
             renderRanking();
             updateSummary();
-            alert('🗑️ Histórico completamente resetado!');
+            closeAddModal();
+
+            alert(`⚓ Dados adicionados para ${memberName}!`);
         }
-    }
-}
 
-function exportData() {
-    const exportData = {
-        historicData: historicData,
-        metadata: {
-            exportDate: new Date().toISOString(),
-            totalMembers: Object.keys(historicData).length,
-            totalDrugs: Object.values(historicData).reduce((sum, member) => sum + member.drugs, 0),
-            totalContribution: Object.values(historicData).reduce((sum, member) => sum + member.contribution, 0)
+        function resetHistoric() {
+            if (confirm('⚠️ Tem certeza que deseja resetar TODOS os dados históricos? Esta ação é irreversível!')) {
+                if (confirm('🔥 ÚLTIMA CHANCE: Isso apagará permanentemente todo o histórico. Continuar?')) {
+                    historicData = {};
+                    saveHistoricData();
+                    renderRanking();
+                    updateSummary();
+                    alert('🗑️ Histórico completamente resetado!');
+                }
+            }
         }
-    };
-    
-    const jsonData = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([jsonData], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'historicData.json';
-    document.body.appendChild(a);
-    a.click();
-    
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    alert('📁 Arquivo historicData.json exportado com sucesso!');
-}
 
-function importDataFromFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-            historicData = importedData.historicData || importedData;
-            saveHistoricData();
-            renderRanking();
-            updateSummary();
-            alert('✅ Dados históricos importados com sucesso!');
-        } catch (error) {
-            alert('❌ Erro ao importar arquivo: ' + error.message);
+        function exportData() {
+            const exportData = {
+                historicData: historicData,
+                metadata: {
+                    exportDate: new Date().toISOString(),
+                    totalMembers: Object.keys(historicData).length,
+                    totalCoins: Object.values(historicData).reduce((sum, member) => sum + (member.coins || 0), 0),
+                    totalContribution: Object.values(historicData).reduce((sum, member) => sum + member.contribution, 0)
+                }
+            };
+
+            const jsonData = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'historicData.json';
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('📁 Arquivo historicData.json exportado com sucesso!');
         }
-    };
-    reader.readAsText(file);
-}
 
-function triggerImport() {
-    document.getElementById('fileInput').click();
-}
+        function importDataFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-// Calcular automaticamente quando digitar drogas
-document.getElementById('drugsAdd').addEventListener('input', function() {
-    let drugs = this.value.replace(/\./g, '').replace(',', '.');
-    drugs = parseFloat(drugs) || 0;
-    if (drugs > 0) {
-        const result = calculateFromDrugs(drugs);
-        document.getElementById('moneyAdd').value = result.dirtyMoney.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    } else {
-        document.getElementById('moneyAdd').value = '';
-    }
-});
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    const sourceData = importedData.historicData || importedData;
+                    // Converter dados antigos (drugs) para novo formato (coins)
+                    const convertedData = {};
+                    for (const [name, data] of Object.entries(sourceData)) {
+                        convertedData[name] = {
+                            coins: data.coins !== undefined ? data.coins : (data.drugs || 0),
+                            dirtyMoney: data.dirtyMoney || 0,
+                            cleanMoney: data.cleanMoney || 0,
+                            contribution: data.contribution || 0
+                        };
+                    }
+                    historicData = convertedData;
+                    saveHistoricData();
+                    renderRanking();
+                    updateSummary();
+                    alert('✅ Dados históricos importados com sucesso!');
+                } catch (error) {
+                    alert('❌ Erro ao importar arquivo: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
 
-// Calcular automaticamente quando digitar dinheiro
-document.getElementById('moneyAdd').addEventListener('input', function() {
-    let money = this.value.replace(/\./g, '').replace(',', '.');
-    money = parseFloat(money) || 0;
-    if (money > 0) {
-        const result = calculateFromMoney(money);
-        document.getElementById('drugsAdd').value = Math.round(result.drugs).toLocaleString('pt-BR');
-    } else {
-        document.getElementById('drugsAdd').value = '';
-    }
-});
+        function triggerImport() {
+            document.getElementById('fileInput').click();
+        }
 
-// Carregar dados ao iniciar
-loadHistoricData();
+        // Calcular automaticamente quando digitar Moedas de Guarma
+        document.getElementById('drugsAdd').addEventListener('input', function () {
+            let coins = this.value.replace(/\./g, '').replace(',', '.');
+            coins = parseFloat(coins) || 0;
+            if (coins > 0) {
+                const result = calculateFromDrugs(coins);
+                document.getElementById('moneyAdd').value = result.dirtyMoney.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            } else {
+                document.getElementById('moneyAdd').value = '';
+            }
+        });
+
+        // Calcular automaticamente quando digitar dinheiro
+        document.getElementById('moneyAdd').addEventListener('input', function () {
+            let money = this.value.replace(/\./g, '').replace(',', '.');
+            money = parseFloat(money) || 0;
+            if (money > 0) {
+                const result = calculateFromMoney(money);
+                document.getElementById('drugsAdd').value = Math.round(result.coins).toLocaleString('pt-BR');
+            } else {
+                document.getElementById('drugsAdd').value = '';
+            }
+        });
+
+        // Carregar dados ao iniciar
+        loadHistoricData();
     </script>
 </body>
+
 </html>
