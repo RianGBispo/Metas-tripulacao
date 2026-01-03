@@ -24,13 +24,17 @@
                     <h3>🎯 Sistema de Metas</h3>
                     <div class="goals-system">
                         <div class="goal-tier minimum">
-                            <strong>📊 Meta Mínima: 250 drogas</strong><br>
+                            <strong>📊 Meta Mínima: 250 Moedas de Guarma</strong><br>
                             <small>Apenas dinheiro do trabalho</small>
                         </div>
                         <div class="goal-tier premium">
-                            <strong>🏆 Meta Premium: 500+ drogas</strong><br>
+                            <strong>🏆 Meta Premium: 500+ Moedas de Guarma</strong><br>
                             <small> Ou equivalente em dinheiro sujo<br>
+<<<<<<< Updated upstream
                                 <em>(cada droga = $28 sujo)</em></p></small>
+=======
+                                <em>(cada Moeda de Guarma = $8 sujo)</em></p></small>
+>>>>>>> Stashed changes
                             <strong><small>Ganha premiação da semana!</small></strong>
                         </div>
                     </div>
@@ -46,7 +50,7 @@
                 </div>
             </div>
             <div class="premio">
-                ⚔️ PRÊMIO DESTA SEMANA: UM ABRAÇO DO CAPITÃO BANANINHA para quem bater 500+ drogas!
+                ⚔️ PRÊMIO DESTA SEMANA: UM ABRAÇO DO CAPITÃO BANANINHA para quem bater 500+ Moedas de Guarma!
             </div>
         </div>
 
@@ -81,7 +85,7 @@
                 <select id="memberSelect"></select>
             </div>
             <div class="form-group">
-                <label for="drugsInput">Drogas Vendidas:</label>
+                <label for="drugsInput">Moedas de Guarma Coletadas:</label>
                 <input type="number" id="drugsInput" min="0" placeholder="Digite a quantidade">
             </div>
             <div class="form-group">
@@ -114,8 +118,10 @@
                 for (let i = 1; i < lines.length; i++) {
                     const cols = lines[i].split(',');
                     const name = cols[0];
-                    const drugs = parseFloat(cols[1]) || 0;
-                    const dirtyMoney = parseFloat(cols[2]) || 0; // Dinheiro sujo da planilha
+                    const coins = parseFloat(cols[1]) || 0; // Moedas de Guarma direto da planilha
+
+                    // Calcular dinheiro sujo a partir das Moedas de Guarma
+                    const dirtyMoney = coins * COIN_VALUE;
 
                     // Cálculos simplificados
                     const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
@@ -123,7 +129,7 @@
                     const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
 
                     crewData[name] = {
-                        drugs: drugs,
+                        coins: coins,
                         dirtyMoney: dirtyMoney,
                         cleanMoney: finalCleanMoney,
                         contribution: contribution
@@ -149,29 +155,29 @@
             }
         }
 
-        const MINIMUM_DRUGS = 250;  // Meta mínima
-        const TARGET_DRUGS = 500;   // Meta para premiação
-        const DRUG_VALUE = 8;
-        const WASHING_PERCENT = 20;         // custo para "processar" o bruto
+        const MINIMUM_COINS = 250;  // Meta mínima em Moedas de Guarma
+        const TARGET_COINS = 500;   // Meta para premiação em Moedas de Guarma
+        const COIN_VALUE = 4;       // 1 Moeda de Guarma = $4 sujo
+        const WASHING_PERCENT = 20; // custo para "processar" o bruto
         const CONTRIBUTION_PERCENT = 20; // Porcentagem da contribuição (20%)
 
-        function getStatusClass(drugs) {
-            if (drugs >= TARGET_DRUGS) return 'completed';
-            if (drugs >= MINIMUM_DRUGS) return 'minimum-reached';
-            if (drugs > 0) return 'in-progress';
+        function getStatusClass(coins) {
+            if (coins >= TARGET_COINS) return 'completed';
+            if (coins >= MINIMUM_COINS) return 'minimum-reached';
+            if (coins > 0) return 'in-progress';
             return 'not-started';
         }
 
-        function getStatusIcon(drugs) {
-            if (drugs >= TARGET_DRUGS) return '🏆';
-            if (drugs >= MINIMUM_DRUGS) return '✅';
-            if (drugs > 0) return '⚡';
+        function getStatusIcon(coins) {
+            if (coins >= TARGET_COINS) return '🏆';
+            if (coins >= MINIMUM_COINS) return '✅';
+            if (coins > 0) return '⚡';
             return '💤';
         }
 
-        function getStatusBadge(drugs) {
-            if (drugs >= TARGET_DRUGS) return '<span class="status-badge premium">🎁 bateu a meta e ganhou um prêmio especial! 🎁🏴‍☠️</span>';
-            if (drugs >= MINIMUM_DRUGS) return '<span class="status-badge minimum">✅ META MÍNIMA ATINGIDA</span>';
+        function getStatusBadge(coins) {
+            if (coins >= TARGET_COINS) return '<span class="status-badge premium">🎁 bateu a meta e ganhou um prêmio especial! 🎁🏴‍☠️</span>';
+            if (coins >= MINIMUM_COINS) return '<span class="status-badge minimum">✅ META MÍNIMA ATINGIDA</span>';
             return '';
         }
 
@@ -192,15 +198,15 @@
             memberSelect.innerHTML = '<option value="">Selecione um membro...</option>';
 
             // Ordenar por progresso (maior primeiro)
-            const sortedCrew = Object.entries(crewData).sort((a, b) => b[1].drugs - a[1].drugs);
+            const sortedCrew = Object.entries(crewData).sort((a, b) => b[1].coins - a[1].coins);
 
             sortedCrew.forEach(([name, data]) => {
-                // Arredondar apenas as drogas para exibição
-                const drugsDisplayed = Math.round(data.drugs);
-                const statusClass = getStatusClass(drugsDisplayed);
-                const statusIcon = getStatusIcon(drugsDisplayed);
-                const statusBadge = getStatusBadge(drugsDisplayed);
-                const progressPercent = Math.min((drugsDisplayed / TARGET_DRUGS) * 100, 100);
+                // Arredondar apenas as Moedas de Guarma para exibição
+                const coinsDisplayed = Math.round(data.coins);
+                const statusClass = getStatusClass(coinsDisplayed);
+                const statusIcon = getStatusIcon(coinsDisplayed);
+                const statusBadge = getStatusBadge(coinsDisplayed);
+                const progressPercent = Math.min((coinsDisplayed / TARGET_COINS) * 100, 100);
 
                 const crewMember = document.createElement('div');
                 crewMember.className = `crew-member ${statusClass}`;
@@ -212,7 +218,7 @@
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill ${statusClass}" style="width: ${progressPercent}%"></div>
-                        <div class="progress-text">${drugsDisplayed}/${TARGET_DRUGS} drogas (${Math.round(progressPercent)}%)</div>
+                        <div class="progress-text">${coinsDisplayed}/${TARGET_COINS} Moedas de Guarma (${Math.round(progressPercent)}%)</div>
                     </div>
                     <div class="stats">
                         <div class="stat">
@@ -262,27 +268,28 @@
 
         // Função para calcular valores a partir do dinheiro sujo
         function calculateFromMoney(dirtyMoney) {
+            const coins = dirtyMoney / COIN_VALUE;
             const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
             const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
             const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
 
             return {
-                drugs: dirtyMoney / DRUG_VALUE,
+                coins: coins,
                 dirtyMoney: dirtyMoney,
                 cleanMoney: finalCleanMoney,
                 contribution: contribution
             };
         }
 
-        // Função para calcular valores a partir das drogas
-        function calculateFromDrugs(drugs) {
-            const dirtyMoney = drugs * DRUG_VALUE;
+        // Função para calcular valores a partir das Moedas de Guarma
+        function calculateFromCoins(coins) {
+            const dirtyMoney = coins * COIN_VALUE;
             const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
             const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
             const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
 
             return {
-                drugs: drugs,
+                coins: coins,
                 dirtyMoney: dirtyMoney,
                 cleanMoney: finalCleanMoney,
                 contribution: contribution
@@ -295,11 +302,11 @@
             calculationResult.innerHTML = `
                 <div class="calculation-details">
                     <h3>Detalhes do Cálculo:</h3>
-                    <p><strong>Drogas:</strong> ${Math.round(result.drugs)} (exibição)</p>
+                    <p><strong>Moedas de Guarma:</strong> ${Math.round(result.coins)} (exibição)</p>
                     <p><strong>Dinheiro Sujo:</strong> ${formatMoney(result.dirtyMoney)}</p>
                     <p><strong>Dinheiro Limpo:</strong> ${formatMoney(result.cleanMoney)}</p>
                     <p><strong>Contribuição (${CONTRIBUTION_PERCENT}%):</strong> ${formatMoney(result.contribution)}</p>
-                    <p style="color: #888; font-size: 0.9em;"><em>Nota: Drogas são arredondadas apenas para visualização. Valores de dinheiro são exatos.</em></p>
+                    <p style="color: #888; font-size: 0.9em;"><em>Nota: Moedas de Guarma são arredondadas apenas para visualização. Valores de dinheiro são exatos.</em></p>
                 </div>
             `;
         }
@@ -307,7 +314,7 @@
         // Atualizar o progresso do membro
         function updateProgress() {
             const memberName = document.getElementById('memberSelect').value;
-            const drugsInput = document.getElementById('drugsInput').value;
+            const coinsInput = document.getElementById('drugsInput').value;
             const moneyInput = document.getElementById('dirtyMoneyInput').value;
 
             if (!memberName) {
@@ -321,30 +328,30 @@
                 const dirtyMoney = parseFloat(moneyInput);
                 result = calculateFromMoney(dirtyMoney);
                 console.log('Calculando pelo DINHEIRO:', dirtyMoney, '-> resultado:', result);
-            } else if (drugsInput) {
-                // Calcular a partir das drogas apenas se dinheiro não foi informado
-                const drugs = parseFloat(drugsInput);
-                result = calculateFromDrugs(drugs);
-                console.log('Calculando pelas DROGAS:', drugs, '-> resultado:', result);
+            } else if (coinsInput) {
+                // Calcular a partir das Moedas de Guarma apenas se dinheiro não foi informado
+                const coins = parseFloat(coinsInput);
+                result = calculateFromCoins(coins);
+                console.log('Calculando pelas MOEDAS DE GUARMA:', coins, '-> resultado:', result);
             } else {
-                alert('Digite a quantidade de drogas ou o valor em dinheiro!');
+                alert('Digite a quantidade de Moedas de Guarma ou o valor em dinheiro!');
                 return;
             }
 
             // Se o membro já existir, acumula. Senão, cria do zero
             if (!crewData[memberName]) {
                 crewData[memberName] = {
-                    drugs: 0,
+                    coins: 0,
                     dirtyMoney: 0,
                     cleanMoney: 0,
                     contribution: 0
                 };
             }
 
-            const oldDrugs = crewData[memberName].drugs;
+            const oldCoins = crewData[memberName].coins;
 
             // Acumular os valores EXATOS
-            crewData[memberName].drugs += result.drugs;
+            crewData[memberName].coins += result.coins;
             crewData[memberName].dirtyMoney += result.dirtyMoney;
             crewData[memberName].cleanMoney += result.cleanMoney;
             crewData[memberName].contribution += result.contribution;
@@ -358,13 +365,13 @@
             renderCrew();
             closeUpdateModal();
 
-            // Mostrar mensagens de conquista (usando valor arredondado das drogas)
-            const totalDrugsRounded = Math.round(crewData[memberName].drugs);
-            const oldDrugsRounded = Math.round(oldDrugs);
+            // Mostrar mensagens de conquista (usando valor arredondado das Moedas de Guarma)
+            const totalCoinsRounded = Math.round(crewData[memberName].coins);
+            const oldCoinsRounded = Math.round(oldCoins);
 
-            if (oldDrugsRounded < TARGET_DRUGS && totalDrugsRounded >= TARGET_DRUGS) {
+            if (oldCoinsRounded < TARGET_COINS && totalCoinsRounded >= TARGET_COINS) {
                 alert(`🏆 ${memberName} conquistou a meta premium! Ganha o prêmio da semana! 🎁🏴‍☠️`);
-            } else if (oldDrugsRounded < MINIMUM_DRUGS && totalDrugsRounded >= MINIMUM_DRUGS) {
+            } else if (oldCoinsRounded < MINIMUM_COINS && totalCoinsRounded >= MINIMUM_COINS) {
                 alert(`✅ ${memberName} atingiu a meta mínima! Continue assim para ganhar o prêmio! 💪`);
             }
         }
@@ -372,7 +379,7 @@
         function resetWeek() {
             if (confirm('Tem certeza que deseja resetar os dados para uma nova semana?')) {
                 Object.keys(crewData).forEach(name => {
-                    crewData[name] = { drugs: 0, dirtyMoney: 0, cleanMoney: 0, contribution: 0 };
+                    crewData[name] = { coins: 0, dirtyMoney: 0, cleanMoney: 0, contribution: 0 };
                 });
 
                 // Salvar dados resetados
@@ -417,11 +424,11 @@
             alert('📁 Arquivo crewData.json atualizado e pronto para download!');
         }
 
-        // Atualizar campo de dinheiro sujo automaticamente quando digitar drogas
+        // Atualizar campo de dinheiro sujo automaticamente quando digitar Moedas de Guarma
         document.getElementById('drugsInput').addEventListener('input', function () {
-            const drugs = parseFloat(this.value) || 0;
-            if (drugs > 0) {
-                const result = calculateFromDrugs(drugs);
+            const coins = parseFloat(this.value) || 0;
+            if (coins > 0) {
+                const result = calculateFromCoins(coins);
                 document.getElementById('dirtyMoneyInput').value = result.dirtyMoney;
                 showCalculations(result);
             } else {
@@ -430,13 +437,13 @@
             }
         });
 
-        // Atualizar campo de drogas automaticamente quando digitar dinheiro
+        // Atualizar campo de Moedas de Guarma automaticamente quando digitar dinheiro
         document.getElementById('dirtyMoneyInput').addEventListener('input', function () {
             const dirtyMoney = parseFloat(this.value) || 0;
             if (dirtyMoney > 0) {
                 const result = calculateFromMoney(dirtyMoney);
-                // Mostrar drogas arredondadas no campo, mas manter valor exato internamente
-                document.getElementById('drugsInput').value = Math.round(result.drugs);
+                // Mostrar Moedas de Guarma arredondadas no campo, mas manter valor exato internamente
+                document.getElementById('drugsInput').value = Math.round(result.coins);
                 showCalculations(result);
             } else {
                 document.getElementById('drugsInput').value = '';
@@ -460,7 +467,18 @@
             reader.onload = function (e) {
                 try {
                     const importedData = JSON.parse(e.target.result);
-                    crewData = importedData.crewData || importedData;
+                    // Converter dados antigos (drugs) para novo formato (coins)
+                    const convertedData = {};
+                    const sourceData = importedData.crewData || importedData;
+                    for (const [name, data] of Object.entries(sourceData)) {
+                        convertedData[name] = {
+                            coins: data.coins !== undefined ? data.coins : (data.drugs || 0),
+                            dirtyMoney: data.dirtyMoney || 0,
+                            cleanMoney: data.cleanMoney || 0,
+                            contribution: data.contribution || 0
+                        };
+                    }
+                    crewData = convertedData;
                     saveCrewData();
                     renderCrew();
                     alert('Dados importados com sucesso!');
