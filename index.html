@@ -24,11 +24,13 @@
                     <h3>🎯 Sistema de Metas</h3>
                     <div class="goals-system">
                         <div class="goal-tier minimum">
-                            <strong>📊 Meta Mínima: 1000 Moedas de Guarma</strong><br>
+                            <strong>📊 Meta Mínima: 250 drogas</strong><br>
                             <small>Apenas dinheiro do trabalho</small>
                         </div>
                         <div class="goal-tier premium">
-                            <strong>🏆 Meta Premium: 2000+ Moewdas de Guarma</strong><br>
+                            <strong>🏆 Meta Premium: 500+ drogas</strong><br>
+                            <small> Ou equivalente em dinheiro sujo<br>
+                                <em>(cada droga = $28 sujo)</em></p></small>
                             <strong><small>Ganha premiação da semana!</small></strong>
                         </div>
                     </div>
@@ -44,17 +46,19 @@
                 </div>
             </div>
             <div class="premio">
-                ⚔️ PRÊMIO DESTA SEMANA: UM ABRAÇO DO CAPITÃO BANANINHA para quem bater 500+ Moedas de Guarma!
+                ⚔️ PRÊMIO DESTA SEMANA: UM ABRAÇO DO CAPITÃO BANANINHA para quem bater 500+ drogas!
             </div>
         </div>
 
         <div class="controls">
-            <button class="btn btn-primary" onclick="openUpdateModal()">📊 Atualizar Progresso</button>
-            <button class="btn btn-primary" onclick="resetWeek()">🔄 Nova Semana</button>
-            <button class="btn btn-primary" onclick="exportData()">📤 Exportar Dados</button>
-            <button class="btn btn-primary" onclick="triggerImport()">Importar Dados</button>
+            <!-- <button class="btn btn-primary" onclick="openUpdateModal()">📊 Atualizar Progresso</button> -->
+            <!-- <button class="btn btn-primary" onclick="resetWeek()">🔄 Nova Semana</button> -->
+            <button class="btn btn-primary" onclick="configureWashing()">⚙️ Ajustar Lavagem (%)</button>
+            <!-- <button class="btn btn-primary" onclick="exportData()">📤 Exportar Dados</button> -->
+            <!-- <button class="btn btn-primary" onclick="triggerImport()">Importar Dados</button> -->
             <button class="btn btn-primary" onclick="window.location.href='historico.html'">🏆 Ranking
                 Histórico</button>
+            <span class="washing-info">Lavagem atual: <strong id="washingPercentDisplay">20%</strong></span>
             <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importDataFromFile(event)">
         </div>
 
@@ -79,403 +83,22 @@
                 <select id="memberSelect"></select>
             </div>
             <div class="form-group">
-                <label for="drugsInput">Drogas Vendidas:</label>
-                <input type="number" id="drugsInput" min="0" placeholder="Digite a quantidade">
+                <label for="coinsInput">Moedas de Guarma:</label>
+                <input type="number" id="coinsInput" min="0" placeholder="Digite a quantidade">
             </div>
             <div class="form-group">
                 <label for="dirtyMoneyInput">Dinheiro Sujo ($):</label>
                 <input type="number" id="dirtyMoneyInput" min="0" step="0.01"
                     placeholder="Será calculado automaticamente">
             </div>
+            <div id="calculationResult" class="calculation-result"></div>
             <button class="btn btn-primary" onclick="updateProgress()" style="width: 100%; margin-top: 20px;">
                 💰 Atualizar Progresso
             </button>
         </div>
     </div>
 
-    <script>
-        // declarada globalmente
-        let crewData = {};
-
-        // Carregar dados - primeiro tenta do arquivo JSON, depois do localStorage como fallback
-        async function loadCrewData() {
-            try {
-                const csvUrl = 'https://docs.google.com/spreadsheets/d/1nTtm63rHntqpyVMrdbz8J7o1xKL7RdXdp320k_NlP-I/?output=csv';
-                const response = await fetch(csvUrl);
-                if (!response.ok) throw new Error('Erro ao buscar planilha');
-                const csvText = await response.text();
-
-                crewData = {};
-                const lines = csvText.trim().split('\n');
-                const headers = lines[0].split(',');
-
-                for (let i = 1; i < lines.length; i++) {
-                    const cols = lines[i].split(',');
-                    const name = cols[0];
-                    const drugs = parseFloat(cols[1]) || 0;
-                    const dirtyMoney = parseFloat(cols[2]) || 0; // Dinheiro sujo da planilha
-
-                    // Cálculos simplificados
-                    const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
-                    const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
-                    const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
-
-                    crewData[name] = {
-                        drugs: drugs,
-                        dirtyMoney: dirtyMoney,
-                        cleanMoney: finalCleanMoney,
-                        contribution: contribution
-                    };
-                }
-                renderCrew();
-            } catch (error) {
-                alert('Erro ao carregar dados da planilha: ' + error.message);
-                crewData = {};
-                renderCrew();
-            }
-        }
-
-        // Salvar dados no localStorage E opcionalmente oferecer download do JSON atualizado
-        function saveCrewData() {
-            // Sempre salva no localStorage
-            localStorage.setItem('crewData', JSON.stringify(crewData));
-
-            // Opcional: também oferece para salvar o arquivo atualizado
-            // Você pode remover esta parte se não quiser o prompt automático
-            if (confirm('Deseja baixar uma cópia atualizada do arquivo crewData.json?')) {
-                exportData();
-            }
-        }
-
-        const MINIMUM_DRUGS = 250;  // Meta mínima
-        const TARGET_DRUGS = 500;   // Meta para premiação
-        const DRUG_VALUE = 8;
-        const WASHING_PERCENT = 20;         // custo para "processar" o bruto
-        const CONTRIBUTION_PERCENT = 20; // Porcentagem da contribuição (20%)
-
-        function getStatusClass(drugs) {
-            if (drugs >= TARGET_DRUGS) return 'completed';
-            if (drugs >= MINIMUM_DRUGS) return 'minimum-reached';
-            if (drugs > 0) return 'in-progress';
-            return 'not-started';
-        }
-
-        function getStatusIcon(drugs) {
-            if (drugs >= TARGET_DRUGS) return '🏆';
-            if (drugs >= MINIMUM_DRUGS) return '✅';
-            if (drugs > 0) return '⚡';
-            return '💤';
-        }
-
-        function getStatusBadge(drugs) {
-            if (drugs >= TARGET_DRUGS) return '<span class="status-badge premium">🎁 bateu a meta e ganhou um prêmio especial! 🎁🏴‍☠️</span>';
-            if (drugs >= MINIMUM_DRUGS) return '<span class="status-badge minimum">✅ META MÍNIMA ATINGIDA</span>';
-            return '';
-        }
-
-        function formatMoney(amount) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'USD',
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(amount);
-        }
-
-        function renderCrew() {
-            const crewGrid = document.getElementById('crewGrid');
-            const memberSelect = document.getElementById('memberSelect');
-
-            crewGrid.innerHTML = '';
-            memberSelect.innerHTML = '<option value="">Selecione um membro...</option>';
-
-            // Ordenar por progresso (maior primeiro)
-            const sortedCrew = Object.entries(crewData).sort((a, b) => b[1].drugs - a[1].drugs);
-
-            sortedCrew.forEach(([name, data]) => {
-                // Arredondar apenas as drogas para exibição
-                const drugsDisplayed = Math.round(data.drugs);
-                const statusClass = getStatusClass(drugsDisplayed);
-                const statusIcon = getStatusIcon(drugsDisplayed);
-                const statusBadge = getStatusBadge(drugsDisplayed);
-                const progressPercent = Math.min((drugsDisplayed / TARGET_DRUGS) * 100, 100);
-
-                const crewMember = document.createElement('div');
-                crewMember.className = `crew-member ${statusClass}`;
-                crewMember.innerHTML = `
-                    <div class="member-name">
-                        <span class="status-icon">${statusIcon}</span>
-                        ${name}
-                        ${statusBadge}
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill ${statusClass}" style="width: ${progressPercent}%"></div>
-                        <div class="progress-text">${drugsDisplayed}/${TARGET_DRUGS} drogas (${Math.round(progressPercent)}%)</div>
-                    </div>
-                    <div class="stats">
-                        <div class="stat">
-                            <div class="stat-value">${formatMoney(data.dirtyMoney)}</div>
-                            <div class="stat-label">Dinheiro Sujo</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">${formatMoney(data.cleanMoney)}</div>
-                            <div class="stat-label">Dinheiro Limpo</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-value">${formatMoney(data.contribution)}</div>
-                            <div class="stat-label">Contribuição</div>
-                        </div>
-                    </div>
-                `;
-                crewGrid.appendChild(crewMember);
-
-                // Adicionar ao select
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                memberSelect.appendChild(option);
-            });
-
-            // Atualizar caixa da tripulação
-            const totalContribution = Object.values(crewData).reduce((sum, member) => sum + member.contribution, 0);
-            document.getElementById('treasuryValue').textContent = formatMoney(totalContribution);
-        }
-
-        function openUpdateModal() {
-            document.getElementById('updateModal').style.display = 'block';
-            // Limpar campos ao abrir o modal
-            document.getElementById('drugsInput').value = '';
-            document.getElementById('dirtyMoneyInput').value = '';
-            document.getElementById('calculationResult').innerHTML = '';
-        }
-
-        function closeUpdateModal() {
-            document.getElementById('updateModal').style.display = 'none';
-            // Limpar campos
-            document.getElementById('memberSelect').value = '';
-            document.getElementById('drugsInput').value = '';
-            document.getElementById('dirtyMoneyInput').value = '';
-            document.getElementById('calculationResult').innerHTML = '';
-        }
-
-        // Função para calcular valores a partir do dinheiro sujo
-        function calculateFromMoney(dirtyMoney) {
-            const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
-            const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
-            const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
-
-            return {
-                drugs: dirtyMoney / DRUG_VALUE,
-                dirtyMoney: dirtyMoney,
-                cleanMoney: finalCleanMoney,
-                contribution: contribution
-            };
-        }
-
-        // Função para calcular valores a partir das drogas
-        function calculateFromDrugs(drugs) {
-            const dirtyMoney = drugs * DRUG_VALUE;
-            const cleanMoneyBeforeContribution = dirtyMoney * 0.8; // Remove 20% da lavagem
-            const contribution = cleanMoneyBeforeContribution * 0.2; // 20% para tripulação
-            const finalCleanMoney = cleanMoneyBeforeContribution - contribution; // O que sobra para o indivíduo
-
-            return {
-                drugs: drugs,
-                dirtyMoney: dirtyMoney,
-                cleanMoney: finalCleanMoney,
-                contribution: contribution
-            };
-        }
-
-        // Mostrar os cálculos no modal
-        function showCalculations(result) {
-            const calculationResult = document.getElementById('calculationResult');
-            calculationResult.innerHTML = `
-                <div class="calculation-details">
-                    <h3>Detalhes do Cálculo:</h3>
-                    <p><strong>Drogas:</strong> ${Math.round(result.drugs)} (exibição)</p>
-                    <p><strong>Dinheiro Sujo:</strong> ${formatMoney(result.dirtyMoney)}</p>
-                    <p><strong>Dinheiro Limpo:</strong> ${formatMoney(result.cleanMoney)}</p>
-                    <p><strong>Contribuição (${CONTRIBUTION_PERCENT}%):</strong> ${formatMoney(result.contribution)}</p>
-                    <p style="color: #888; font-size: 0.9em;"><em>Nota: Drogas são arredondadas apenas para visualização. Valores de dinheiro são exatos.</em></p>
-                </div>
-            `;
-        }
-
-        // Atualizar o progresso do membro
-        function updateProgress() {
-            const memberName = document.getElementById('memberSelect').value;
-            const drugsInput = document.getElementById('drugsInput').value;
-            const moneyInput = document.getElementById('dirtyMoneyInput').value;
-
-            if (!memberName) {
-                alert('Selecione um membro da tripulação!');
-                return;
-            }
-
-            let result;
-            if (moneyInput) {
-                // PRIORITAR cálculo a partir do dinheiro se ambos estiverem preenchidos
-                const dirtyMoney = parseFloat(moneyInput);
-                result = calculateFromMoney(dirtyMoney);
-                console.log('Calculando pelo DINHEIRO:', dirtyMoney, '-> resultado:', result);
-            } else if (drugsInput) {
-                // Calcular a partir das drogas apenas se dinheiro não foi informado
-                const drugs = parseFloat(drugsInput);
-                result = calculateFromDrugs(drugs);
-                console.log('Calculando pelas DROGAS:', drugs, '-> resultado:', result);
-            } else {
-                alert('Digite a quantidade de drogas ou o valor em dinheiro!');
-                return;
-            }
-
-            // Se o membro já existir, acumula. Senão, cria do zero
-            if (!crewData[memberName]) {
-                crewData[memberName] = {
-                    drugs: 0,
-                    dirtyMoney: 0,
-                    cleanMoney: 0,
-                    contribution: 0
-                };
-            }
-
-            const oldDrugs = crewData[memberName].drugs;
-
-            // Acumular os valores EXATOS
-            crewData[memberName].drugs += result.drugs;
-            crewData[memberName].dirtyMoney += result.dirtyMoney;
-            crewData[memberName].cleanMoney += result.cleanMoney;
-            crewData[memberName].contribution += result.contribution;
-
-            console.log('Dados salvos para', memberName, ':', crewData[memberName]);
-
-            // Salvar no localStorage
-            saveCrewData();
-
-            // Re-renderizar
-            renderCrew();
-            closeUpdateModal();
-
-            // Mostrar mensagens de conquista (usando valor arredondado das drogas)
-            const totalDrugsRounded = Math.round(crewData[memberName].drugs);
-            const oldDrugsRounded = Math.round(oldDrugs);
-
-            if (oldDrugsRounded < TARGET_DRUGS && totalDrugsRounded >= TARGET_DRUGS) {
-                alert(`🏆 ${memberName} conquistou a meta premium! Ganha o prêmio da semana! 🎁🏴‍☠️`);
-            } else if (oldDrugsRounded < MINIMUM_DRUGS && totalDrugsRounded >= MINIMUM_DRUGS) {
-                alert(`✅ ${memberName} atingiu a meta mínima! Continue assim para ganhar o prêmio! 💪`);
-            }
-        }
-
-        function resetWeek() {
-            if (confirm('Tem certeza que deseja resetar os dados para uma nova semana?')) {
-                Object.keys(crewData).forEach(name => {
-                    crewData[name] = { drugs: 0, dirtyMoney: 0, cleanMoney: 0, contribution: 0 };
-                });
-
-                // Salvar dados resetados
-                saveCrewData();
-                renderCrew();
-
-                alert('📊 Nova semana iniciada! Que os ventos sejam favoráveis! ⛵');
-            }
-        }
-
-        function exportData() {
-            // Criar objeto com todos os dados necessários
-            const exportData = {
-                crewData: crewData,
-                metadata: {
-                    exportDate: new Date().toISOString(),
-                    minimumDrugs: MINIMUM_DRUGS,
-                    targetDrugs: TARGET_DRUGS,
-                    drugValue: DRUG_VALUE,
-                    totalContribution: Object.values(crewData).reduce((sum, member) => sum + member.contribution, 0)
-                }
-            };
-
-            // Converter para JSON formatado
-            const jsonData = JSON.stringify(exportData, null, 2);
-
-            // Criar blob para download
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-
-            // Criar elemento de download
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'crewData.json';
-            document.body.appendChild(a);
-            a.click();
-
-            // Limpar
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            alert('📁 Arquivo crewData.json atualizado e pronto para download!');
-        }
-
-        // Atualizar campo de dinheiro sujo automaticamente quando digitar drogas
-        document.getElementById('drugsInput').addEventListener('input', function () {
-            const drugs = parseFloat(this.value) || 0;
-            if (drugs > 0) {
-                const result = calculateFromDrugs(drugs);
-                document.getElementById('dirtyMoneyInput').value = result.dirtyMoney;
-                showCalculations(result);
-            } else {
-                document.getElementById('dirtyMoneyInput').value = '';
-                document.getElementById('calculationResult').innerHTML = '';
-            }
-        });
-
-        // Atualizar campo de drogas automaticamente quando digitar dinheiro
-        document.getElementById('dirtyMoneyInput').addEventListener('input', function () {
-            const dirtyMoney = parseFloat(this.value) || 0;
-            if (dirtyMoney > 0) {
-                const result = calculateFromMoney(dirtyMoney);
-                // Mostrar drogas arredondadas no campo, mas manter valor exato internamente
-                document.getElementById('drugsInput').value = Math.round(result.drugs);
-                showCalculations(result);
-            } else {
-                document.getElementById('drugsInput').value = '';
-                document.getElementById('calculationResult').innerHTML = '';
-            }
-        });
-
-        // Fechar modal clicando fora
-        window.onclick = function (event) {
-            const modal = document.getElementById('updateModal');
-            if (event.target === modal) {
-                closeUpdateModal();
-            }
-        }
-
-        function importDataFromFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-                    crewData = importedData.crewData || importedData;
-                    saveCrewData();
-                    renderCrew();
-                    alert('Dados importados com sucesso!');
-                } catch (error) {
-                    alert('Erro ao importar arquivo: ' + error.message);
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function triggerImport() {
-            document.getElementById('fileInput').click();
-        }
-
-        // Inicializar
-        loadCrewData();
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
