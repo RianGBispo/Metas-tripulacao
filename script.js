@@ -4,7 +4,7 @@ let crewData = {};
 const MOEDA_TO_DIRTY = 5;
 const MINIMUM_COINS = 2000;
 const TARGET_COINS = 1000;
-const CONTRIBUTION_PERCENT = 20;
+const CONTRIBUTION_PERCENT = 15;
 const DEFAULT_WASHING_PERCENT = 25;
 const WASHING_STORAGE_KEY = 'washingPercent';
 
