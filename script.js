@@ -1,11 +1,11 @@
 // Dados da tripulação carregados em runtime
 let crewData = {};
 
-const MOEDA_TO_DIRTY = 5;
-const MINIMUM_COINS = 2000;
-const TARGET_COINS = 1000;
-const CONTRIBUTION_PERCENT = 15;
-const DEFAULT_WASHING_PERCENT = 25;
+const MOEDA_TO_DIRTY = 4;
+const MINIMUM_COINS = 1000;
+const TARGET_COINS = 2000;
+const CONTRIBUTION_PERCENT = 20;
+const DEFAULT_WASHING_PERCENT = 5;
 const WASHING_STORAGE_KEY = 'washingPercent';
 
 let washingPercent = DEFAULT_WASHING_PERCENT;
