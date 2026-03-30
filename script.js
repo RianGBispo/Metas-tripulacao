@@ -82,8 +82,8 @@ async function loadCrewData() {
 
         for (let i = 1; i < lines.length; i++) {
             const cols = lines[i].split(',');
-            const name = cols[0];
-            const coins = parseFloat(cols[1]) || 0;
+            const name = cols[1];
+            const coins = parseFloat(cols[2]) || 0;
             const dirtyMoney = coins * MOEDA_TO_DIRTY;
 
             const money = computeMoneyFromDirty(dirtyMoney);
